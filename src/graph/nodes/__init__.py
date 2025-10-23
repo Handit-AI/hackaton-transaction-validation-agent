@@ -10,7 +10,6 @@ from .nodes import (
     merchant_risk_analizer_node,
     geographic_analizer_node,
     decision_aggregator_node,
-    parse_final_decision_tool_node,
     finalizer_node,
     get_graph_nodes,
     _get_node_instance
@@ -23,7 +22,6 @@ __all__ = [
     "merchant_risk_analizer_node",
     "geographic_analizer_node",
     "decision_aggregator_node",
-    "parse_final_decision_tool_node",
     "finalizer_node",
     "get_graph_nodes",
     "_get_node_instance"

@@ -18,7 +18,6 @@ from ...nodes.llm.velocity_checker.processor import VelocityCheckerLLMNode
 from ...nodes.llm.merchant_risk_analizer.processor import MerchantRiskAnalizerLLMNode
 from ...nodes.llm.geographic_analizer.processor import GeographicAnalizerLLMNode
 from ...nodes.llm.decision_aggregator.processor import DecisionAggregatorLLMNode
-from ...nodes.tools.parse_final_decision.processor import ParseFinalDecisionToolNode
 
 
 # Global node instances (initialized once)
@@ -59,44 +58,232 @@ def _get_node_instance(node_name: str, node_type: str = "llm"):
 
 # LangGraph node functions that wrap node classes
 
-async def pattern_detector_node(state: AgentState) -> AgentState:
+async def orchestrator_node(state: AgentState) -> AgentState:
     """
-    LangGraph wrapper for PatternDetector LLM node.
-    This function handles graph orchestration and calls the actual node class.
-    
+    Orchestrator node that parses transaction and prepares for parallel analysis.
+    This is the first node that dispatches work to all analyzer nodes.
+
     Args:
         state: Current agent state
-        
+
     Returns:
-        Updated state with pattern_detector results
+        Updated state with parsed transaction and analyzer configuration
     """
     try:
-        # Get node instance (singleton)
+        from ...state import update_state
+        import json
+
+        # Get transaction input
+        input_data = state.get("input", {})
+
+        # Parse transaction data
+        if isinstance(input_data, str):
+            try:
+                transaction = json.loads(input_data)
+            except json.JSONDecodeError:
+                transaction = {"raw_data": input_data}
+        else:
+            transaction = input_data
+
+        # Normalize transaction data from various formats
+        normalized = {}
+
+        # Extract basic fields
+        normalized["user_id"] = (
+            transaction.get("user_id") or
+            transaction.get("customer", {}).get("customer_id") or
+            transaction.get("customer_id") or
+            f"user_{transaction.get('transaction_id', 'unknown')[:8]}"
+        )
+
+        normalized["user_age_days"] = (
+            transaction.get("user_age_days") or
+            transaction.get("customer", {}).get("age_of_account_days") or
+            transaction.get("age_of_account_days") or
+            180  # default
+        )
+
+        normalized["total_transactions"] = (
+            transaction.get("total_transactions") or
+            transaction.get("historical_stats", {}).get("total_lifetime_transactions") or
+            10  # default
+        )
+
+        normalized["amount"] = (
+            transaction.get("amount") or
+            transaction.get("financial", {}).get("amount") or
+            100.0  # default
+        )
+
+        normalized["time"] = (
+            transaction.get("time") or
+            transaction.get("transaction", {}).get("transaction_datetime", "14:00")[:5] or
+            "14:00"
+        )
+
+        normalized["merchant"] = (
+            transaction.get("merchant") or
+            transaction.get("merchant_name") or
+            transaction.get("merchant", {}).get("merchant_name") or
+            transaction.get("merchant_data", {}).get("merchant_name") or
+            "Unknown Merchant"
+        )
+
+        # Extract merchant category (MCC) for risk assessment
+        normalized["merchant_category_code"] = (
+            transaction.get("merchant_category_code") or
+            transaction.get("merchant", {}).get("merchant_category_code") or
+            transaction.get("merchant_data", {}).get("merchant_category_code") or
+            "0000"  # default unknown
+        )
+
+        normalized["merchant_category"] = (
+            transaction.get("merchant_category") or
+            transaction.get("merchant", {}).get("merchant_category") or
+            transaction.get("merchant_data", {}).get("merchant_category") or
+            "Unknown"
+        )
+
+        normalized["location"] = (
+            transaction.get("location") or
+            f"{transaction.get('location', {}).get('transaction_city', '')}, {transaction.get('location', {}).get('transaction_country', '')}" if isinstance(transaction.get('location'), dict) else
+            transaction.get("location_data", {}).get("transaction_city") or
+            "Unknown"
+        )
+
+        normalized["previous_location"] = (
+            transaction.get("previous_location") or
+            transaction.get("behavioral_profile", {}).get("home_location", {}).get("city") or
+            normalized["location"]  # default to current location
+        )
+
+        # Add additional transaction context if present
+        normalized["transaction_id"] = transaction.get("transaction_id") or transaction.get("transaction", {}).get("transaction_id")
+        normalized["transaction_type"] = transaction.get("transaction_type") or transaction.get("transaction", {}).get("transaction_type") or "PURCHASE"
+        normalized["currency"] = transaction.get("currency") or transaction.get("financial", {}).get("currency") or "USD"
+
+        # Card data (without sensitive info)
+        normalized["card_data"] = transaction.get("card") or transaction.get("card_data", {})
+        normalized["card_brand"] = transaction.get("card_brand") or transaction.get("card", {}).get("card_brand")
+        normalized["card_type"] = transaction.get("card_type") or transaction.get("card", {}).get("card_type")
+
+        # Device and authentication data
+        normalized["device_data"] = transaction.get("device") or transaction.get("device_data", {})
+        normalized["authentication_data"] = transaction.get("authentication") or transaction.get("authentication_data", {})
+
+        # Velocity counters (these are computed from history, not risk scores)
+        normalized["velocity_counters"] = transaction.get("velocity_counters", {})
+
+        # Session data (behavioral, not risk)
+        normalized["session_data"] = transaction.get("session") or transaction.get("session_data", {})
+
+        # Behavioral profile (historical patterns, not scores)
+        normalized["behavioral_profile"] = transaction.get("behavioral_profile", {})
+
+        # Compute basic risk factors based on transaction characteristics (let analyzers determine actual risk)
+        enriched = normalized.copy()
+        enriched["computed_risk_factors"] = {
+            "is_new_user": normalized["user_age_days"] < 90,
+            "is_very_new_user": normalized["user_age_days"] < 7,
+            "is_high_amount": normalized["amount"] > 1000,
+            "is_very_high_amount": normalized["amount"] > 5000,
+            "is_night_time": is_suspicious_time(normalized["time"]),
+            "has_location_change": normalized.get("previous_location") != normalized.get("location"),
+            "high_velocity": normalized.get("velocity_counters", {}).get("transactions_last_hour", 0) > 5,
+            "many_declines": normalized.get("velocity_counters", {}).get("declined_transactions_last_24h", 0) > 3,
+            "failed_authentication": normalized.get("authentication_data", {}).get("authentication_status") == "FAILED",
+            "no_3ds": normalized.get("authentication_data", {}).get("authentication_method") == "NONE",
+            "vpn_detected": normalized.get("device_data", {}).get("vpn_flag", False),
+            "password_reset_recent": normalized.get("session_data", {}).get("password_reset_flag", False),
+            "multiple_login_attempts": normalized.get("session_data", {}).get("login_attempts", 1) > 2
+        }
+
+        # Determine which analyzers to run (all for now in parallel)
+        analyzers_to_run = [
+            "pattern_detector",
+            "behavioral_analizer",
+            "velocity_checker",
+            "merchant_risk_analizer",
+            "geographic_analizer"
+        ]
+
+        # Update state
+        state = update_state(
+            state,
+            transaction_data=transaction,
+            enriched_transaction=enriched,
+            analyzers_to_run=analyzers_to_run,
+            current_stage="orchestrator"
+        )
+
+        # Add message
+        message = AIMessage(content=f"Orchestrator: Dispatching transaction to {len(analyzers_to_run)} parallel analyzers")
+        state = add_message(state, message)
+
+        # Store in results for backward compatibility
+        state = set_stage_result(state, "orchestrator", {
+            "transaction": transaction,
+            "enriched": enriched,
+            "analyzers_dispatched": analyzers_to_run
+        })
+
+        return state
+
+    except Exception as e:
+        return set_error(state, f"Orchestrator error: {str(e)}")
+
+
+def is_suspicious_time(time_str: str) -> bool:
+    """Check if transaction time is suspicious (1 AM - 5 AM)"""
+    try:
+        hour = int(time_str.split(":")[0])
+        return 1 <= hour <= 5
+    except:
+        return False
+
+
+
+
+async def pattern_detector_node(state: AgentState) -> AgentState:
+    """
+    Pattern Detector node - analyzes transaction for known fraud patterns.
+    Runs in parallel with other analyzer nodes.
+
+    Args:
+        state: Current agent state
+
+    Returns:
+        Updated state with pattern detection results
+    """
+    try:
+        from ...state import update_analyzer_result
+        import json
+
+        # Get node instance
         node_instance = _get_node_instance("pattern_detector", "llm")
-        
-        # Get input data for processing
-        input_data = state.get("input", "")
-        
-        # Get previous stage results if available
-        previous_results = ""
-        if state.get("results"):
-            stages = ["behavioral_analizer","decision_aggregator","geographic_analizer","merchant_risk_analizer","parse_final_decision","pattern_detector","velocity_checker"]
-            current_index = stages.index("pattern_detector") if "pattern_detector" in stages else -1
-            if current_index > 0:
-                prev_stage = stages[current_index - 1]
-                previous_results = state["results"].get(prev_stage, "")
-        
-        # Prepare input for the node class
-        processing_input = previous_results if previous_results else str(input_data)
-        
-        # Call the actual node class
+
+        # Get enriched transaction data
+        transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+
+        # Prepare input for the LLM - include transaction details
+        processing_input = json.dumps({
+            "transaction": transaction,
+            "analysis_type": "pattern_detection",
+            "focus": "fraud_patterns"
+        })
+
+        # Call the actual node class - it will return text analysis
         result = await node_instance.run(processing_input)
-        
-        # Update state with results
-        state = set_stage_result(state, "pattern_detector", result)
-        
+
+        # Store the text result directly
+        result_text = str(result) if result else "No patterns detected."
+
+        # Update state with analyzer results (as text)
+        state = update_analyzer_result(state, "pattern_detector", result_text)
+        state = set_stage_result(state, "pattern_detector", result_text)
+
         # Add AI message
-        message = AIMessage(content=f"PatternDetector: {result}")
+        message = AIMessage(content=f"Pattern Detector completed analysis")
         state = add_message(state, message)
         
         return state
@@ -108,42 +295,44 @@ async def pattern_detector_node(state: AgentState) -> AgentState:
 
 async def behavioral_analizer_node(state: AgentState) -> AgentState:
     """
-    LangGraph wrapper for BehavioralAnalizer LLM node.
-    This function handles graph orchestration and calls the actual node class.
-    
+    Behavioral Analyzer node - detects anomalies from user behavior baseline.
+    Runs in parallel with other analyzer nodes.
+
     Args:
         state: Current agent state
-        
+
     Returns:
-        Updated state with behavioral_analizer results
+        Updated state with behavioral analysis results
     """
     try:
-        # Get node instance (singleton)
+        from ...state import update_analyzer_result
+        import json
+
+        # Get node instance
         node_instance = _get_node_instance("behavioral_analizer", "llm")
-        
-        # Get input data for processing
-        input_data = state.get("input", "")
-        
-        # Get previous stage results if available
-        previous_results = ""
-        if state.get("results"):
-            stages = ["behavioral_analizer","decision_aggregator","geographic_analizer","merchant_risk_analizer","parse_final_decision","pattern_detector","velocity_checker"]
-            current_index = stages.index("behavioral_analizer") if "behavioral_analizer" in stages else -1
-            if current_index > 0:
-                prev_stage = stages[current_index - 1]
-                previous_results = state["results"].get(prev_stage, "")
-        
-        # Prepare input for the node class
-        processing_input = previous_results if previous_results else str(input_data)
-        
-        # Call the actual node class
+
+        # Get enriched transaction data
+        transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+
+        # Prepare input for the LLM - include transaction details
+        processing_input = json.dumps({
+            "transaction": transaction,
+            "analysis_type": "behavioral_analysis",
+            "focus": "user_behavior_deviations"
+        })
+
+        # Call the actual node class - it will return text analysis
         result = await node_instance.run(processing_input)
-        
-        # Update state with results
-        state = set_stage_result(state, "behavioral_analizer", result)
-        
+
+        # Store the text result directly
+        result_text = str(result) if result else "No behavioral anomalies detected."
+
+        # Update state with analyzer results (as text)
+        state = update_analyzer_result(state, "behavioral_analizer", result_text)
+        state = set_stage_result(state, "behavioral_analizer", result_text)
+
         # Add AI message
-        message = AIMessage(content=f"BehavioralAnalizer: {result}")
+        message = AIMessage(content=f"Behavioral Analyzer completed analysis")
         state = add_message(state, message)
         
         return state
@@ -155,42 +344,44 @@ async def behavioral_analizer_node(state: AgentState) -> AgentState:
 
 async def velocity_checker_node(state: AgentState) -> AgentState:
     """
-    LangGraph wrapper for VelocityChecker LLM node.
-    This function handles graph orchestration and calls the actual node class.
-    
+    Velocity Checker node - detects rapid-fire attacks and velocity abuse.
+    Runs in parallel with other analyzer nodes.
+
     Args:
         state: Current agent state
-        
+
     Returns:
-        Updated state with velocity_checker results
+        Updated state with velocity analysis results
     """
     try:
-        # Get node instance (singleton)
+        from ...state import update_analyzer_result
+        import json
+
+        # Get node instance
         node_instance = _get_node_instance("velocity_checker", "llm")
-        
-        # Get input data for processing
-        input_data = state.get("input", "")
-        
-        # Get previous stage results if available
-        previous_results = ""
-        if state.get("results"):
-            stages = ["behavioral_analizer","decision_aggregator","geographic_analizer","merchant_risk_analizer","parse_final_decision","pattern_detector","velocity_checker"]
-            current_index = stages.index("velocity_checker") if "velocity_checker" in stages else -1
-            if current_index > 0:
-                prev_stage = stages[current_index - 1]
-                previous_results = state["results"].get(prev_stage, "")
-        
-        # Prepare input for the node class
-        processing_input = previous_results if previous_results else str(input_data)
-        
-        # Call the actual node class
+
+        # Get enriched transaction data
+        transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+
+        # Prepare input for the LLM - include transaction details
+        processing_input = json.dumps({
+            "transaction": transaction,
+            "analysis_type": "velocity_analysis",
+            "focus": "transaction_velocity_patterns"
+        })
+
+        # Call the actual node class - it will return text analysis
         result = await node_instance.run(processing_input)
-        
-        # Update state with results
-        state = set_stage_result(state, "velocity_checker", result)
-        
+
+        # Store the text result directly
+        result_text = str(result) if result else "No velocity issues detected."
+
+        # Update state with analyzer results (as text)
+        state = update_analyzer_result(state, "velocity_checker", result_text)
+        state = set_stage_result(state, "velocity_checker", result_text)
+
         # Add AI message
-        message = AIMessage(content=f"VelocityChecker: {result}")
+        message = AIMessage(content=f"Velocity Checker completed analysis")
         state = add_message(state, message)
         
         return state
@@ -202,42 +393,44 @@ async def velocity_checker_node(state: AgentState) -> AgentState:
 
 async def merchant_risk_analizer_node(state: AgentState) -> AgentState:
     """
-    LangGraph wrapper for MerchantRiskAnalizer LLM node.
-    This function handles graph orchestration and calls the actual node class.
-    
+    Merchant Risk Analyzer node - assesses merchant trustworthiness.
+    Runs in parallel with other analyzer nodes.
+
     Args:
         state: Current agent state
-        
+
     Returns:
-        Updated state with merchant_risk_analizer results
+        Updated state with merchant risk analysis results
     """
     try:
-        # Get node instance (singleton)
+        from ...state import update_analyzer_result
+        import json
+
+        # Get node instance
         node_instance = _get_node_instance("merchant_risk_analizer", "llm")
-        
-        # Get input data for processing
-        input_data = state.get("input", "")
-        
-        # Get previous stage results if available
-        previous_results = ""
-        if state.get("results"):
-            stages = ["behavioral_analizer","decision_aggregator","geographic_analizer","merchant_risk_analizer","parse_final_decision","pattern_detector","velocity_checker"]
-            current_index = stages.index("merchant_risk_analizer") if "merchant_risk_analizer" in stages else -1
-            if current_index > 0:
-                prev_stage = stages[current_index - 1]
-                previous_results = state["results"].get(prev_stage, "")
-        
-        # Prepare input for the node class
-        processing_input = previous_results if previous_results else str(input_data)
-        
-        # Call the actual node class
+
+        # Get enriched transaction data
+        transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+
+        # Prepare input for the LLM - include transaction details
+        processing_input = json.dumps({
+            "transaction": transaction,
+            "analysis_type": "merchant_risk_analysis",
+            "focus": "merchant_trustworthiness"
+        })
+
+        # Call the actual node class - it will return text analysis
         result = await node_instance.run(processing_input)
-        
-        # Update state with results
-        state = set_stage_result(state, "merchant_risk_analizer", result)
-        
+
+        # Store the text result directly
+        result_text = str(result) if result else "Merchant appears legitimate."
+
+        # Update state with analyzer results (as text)
+        state = update_analyzer_result(state, "merchant_risk_analizer", result_text)
+        state = set_stage_result(state, "merchant_risk_analizer", result_text)
+
         # Add AI message
-        message = AIMessage(content=f"MerchantRiskAnalizer: {result}")
+        message = AIMessage(content=f"Merchant Risk Analyzer completed analysis")
         state = add_message(state, message)
         
         return state
@@ -249,42 +442,44 @@ async def merchant_risk_analizer_node(state: AgentState) -> AgentState:
 
 async def geographic_analizer_node(state: AgentState) -> AgentState:
     """
-    LangGraph wrapper for GeographicAnalizer LLM node.
-    This function handles graph orchestration and calls the actual node class.
-    
+    Geographic Analyzer node - detects location-based fraud and impossible travel.
+    Runs in parallel with other analyzer nodes.
+
     Args:
         state: Current agent state
-        
+
     Returns:
-        Updated state with geographic_analizer results
+        Updated state with geographic analysis results
     """
     try:
-        # Get node instance (singleton)
+        from ...state import update_analyzer_result
+        import json
+
+        # Get node instance
         node_instance = _get_node_instance("geographic_analizer", "llm")
-        
-        # Get input data for processing
-        input_data = state.get("input", "")
-        
-        # Get previous stage results if available
-        previous_results = ""
-        if state.get("results"):
-            stages = ["behavioral_analizer","decision_aggregator","geographic_analizer","merchant_risk_analizer","parse_final_decision","pattern_detector","velocity_checker"]
-            current_index = stages.index("geographic_analizer") if "geographic_analizer" in stages else -1
-            if current_index > 0:
-                prev_stage = stages[current_index - 1]
-                previous_results = state["results"].get(prev_stage, "")
-        
-        # Prepare input for the node class
-        processing_input = previous_results if previous_results else str(input_data)
-        
-        # Call the actual node class
+
+        # Get enriched transaction data
+        transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+
+        # Prepare input for the LLM - include transaction details
+        processing_input = json.dumps({
+            "transaction": transaction,
+            "analysis_type": "geographic_analysis",
+            "focus": "location_based_fraud"
+        })
+
+        # Call the actual node class - it will return text analysis
         result = await node_instance.run(processing_input)
-        
-        # Update state with results
-        state = set_stage_result(state, "geographic_analizer", result)
-        
+
+        # Store the text result directly
+        result_text = str(result) if result else "Location appears normal."
+
+        # Update state with analyzer results (as text)
+        state = update_analyzer_result(state, "geographic_analizer", result_text)
+        state = set_stage_result(state, "geographic_analizer", result_text)
+
         # Add AI message
-        message = AIMessage(content=f"GeographicAnalizer: {result}")
+        message = AIMessage(content=f"Geographic Analyzer completed analysis")
         state = add_message(state, message)
         
         return state
@@ -296,42 +491,93 @@ async def geographic_analizer_node(state: AgentState) -> AgentState:
 
 async def decision_aggregator_node(state: AgentState) -> AgentState:
     """
-    LangGraph wrapper for DecisionAggregator LLM node.
-    This function handles graph orchestration and calls the actual node class.
-    
+    Decision Aggregator node - combines all analyzer text results into final JSON decision.
+    Uses OpenAI's JSON schema feature for structured output.
+
     Args:
         state: Current agent state
-        
+
     Returns:
-        Updated state with decision_aggregator results
+        Updated state with aggregated decision in JSON format
     """
     try:
-        # Get node instance (singleton)
-        node_instance = _get_node_instance("decision_aggregator", "llm")
-        
-        # Get input data for processing
-        input_data = state.get("input", "")
-        
-        # Get previous stage results if available
-        previous_results = ""
-        if state.get("results"):
-            stages = ["behavioral_analizer","decision_aggregator","geographic_analizer","merchant_risk_analizer","parse_final_decision","pattern_detector","velocity_checker"]
-            current_index = stages.index("decision_aggregator") if "decision_aggregator" in stages else -1
-            if current_index > 0:
-                prev_stage = stages[current_index - 1]
-                previous_results = state["results"].get(prev_stage, "")
-        
-        # Prepare input for the node class
-        processing_input = previous_results if previous_results else str(input_data)
-        
-        # Call the actual node class
-        result = await node_instance.run(processing_input)
-        
-        # Update state with results
-        state = set_stage_result(state, "decision_aggregator", result)
-        
+        import json
+        import time
+        from ...config import Config
+
+        config = Config()
+
+        # Get all analyzer results (text from each analyzer)
+        analyzer_results = state.get("analyzer_results", {})
+        completed_analyzers = state.get("completed_analyzers", [])
+
+        # Get transaction details
+        transaction = state.get("enriched_transaction") or state.get("transaction_data", {})
+
+        # Prepare all analyzer texts for the aggregator
+        analyzer_summaries = []
+        for analyzer_name in completed_analyzers:
+            result = analyzer_results.get(analyzer_name)
+            if result:
+                analyzer_summaries.append(f"[{analyzer_name.replace('_', ' ').title()}]: {result}")
+
+        # If we don't have enough analyzers, create error response
+        if len(completed_analyzers) < config.min_analyzers_required:
+            final_output = {
+                "final_decision": "DECLINE",
+                "conclusion": "Insufficient analysis completed - declining transaction for safety",
+                "recommendations": ["Manual review required", "System check needed"],
+                "reason": f"Only {len(completed_analyzers)} of minimum {config.min_analyzers_required} analyzers completed"
+            }
+        else:
+            # Get the decision aggregator LLM instance
+            node_instance = _get_node_instance("decision_aggregator", "llm")
+
+            # Prepare input for the aggregator with all analyzer texts
+            processing_input = {
+                "transaction": transaction,
+                "analyzer_reports": analyzer_summaries,
+                "analyzers_completed": completed_analyzers,
+                "instruction": "Based on all the analyzer reports, provide a final fraud decision"
+            }
+
+            # The aggregator LLM will return structured JSON using schema
+            # The prompt should be configured to request JSON with: final_decision, conclusion, recommendations, reason
+            result = await node_instance.run(json.dumps(processing_input))
+
+            # Parse the JSON response from the aggregator
+            try:
+                if isinstance(result, str):
+                    final_output = json.loads(result)
+                else:
+                    final_output = result
+
+                # Ensure required fields exist
+                if "final_decision" not in final_output:
+                    final_output["final_decision"] = "DECLINE"
+                if "conclusion" not in final_output:
+                    final_output["conclusion"] = "Unable to determine - declining for safety"
+                if "recommendations" not in final_output:
+                    final_output["recommendations"] = []
+                if "reason" not in final_output:
+                    final_output["reason"] = "Analysis completed"
+
+            except json.JSONDecodeError:
+                # If JSON parsing fails, create a default response
+                final_output = {
+                    "final_decision": "DECLINE",
+                    "conclusion": "Error processing analyzer results",
+                    "recommendations": ["Manual review required"],
+                    "reason": str(result)[:500] if result else "No response from aggregator"
+                }
+
+        # Update state with final decision output
+        state["final_decision"] = final_output["final_decision"]
+        state["final_output"] = final_output
+        state = set_stage_result(state, "decision_aggregator", final_output)
+
         # Add AI message
-        message = AIMessage(content=f"DecisionAggregator: {result}")
+        message = AIMessage(content=f"Decision Aggregator: {final_output['final_decision']} - {final_output['conclusion']}")
         state = add_message(state, message)
         
         return state
@@ -340,54 +586,6 @@ async def decision_aggregator_node(state: AgentState) -> AgentState:
         error_msg = f"DecisionAggregator node error: {str(e)}"
         print(f"❌ {error_msg}")
         return set_error(state, error_msg)
-
-async def parse_final_decision_tool_node(state: AgentState) -> AgentState:
-    """
-    LangGraph wrapper for ParseFinalDecision tool node.
-    This function handles graph orchestration and calls the actual node class.
-    
-    Args:
-        state: Current agent state
-        
-    Returns:
-        Updated state with parse_final_decision tool results
-    """
-    try:
-        # Get node instance (singleton)
-        node_instance = _get_node_instance("parse_final_decision", "tool")
-        
-        # Get input data for processing
-        input_data = state.get("input", "")
-        
-        # Get previous stage results if available
-        previous_results = ""
-        if state.get("results"):
-            stages = ["behavioral_analizer","decision_aggregator","geographic_analizer","merchant_risk_analizer","parse_final_decision","pattern_detector","velocity_checker"]
-            current_index = stages.index("parse_final_decision") if "parse_final_decision" in stages else -1
-            if current_index > 0:
-                prev_stage = stages[current_index - 1]
-                previous_results = state["results"].get(prev_stage, "")
-        
-        # Prepare input for the node class
-        processing_input = previous_results if previous_results else str(input_data)
-        
-        # Call the actual node class
-        result = await node_instance.run(processing_input)
-        
-        # Update state with results
-        state = set_stage_result(state, "parse_final_decision", result)
-        
-        # Add AI message
-        message = AIMessage(content=f"ParseFinalDecision Tool: {result}")
-        state = add_message(state, message)
-        
-        return state
-        
-    except Exception as e:
-        error_msg = f"ParseFinalDecision tool node error: {str(e)}"
-        print(f"❌ {error_msg}")
-        return set_error(state, error_msg)
-
 
 async def finalizer_node(state: AgentState) -> AgentState:
     """
@@ -464,20 +662,20 @@ def get_graph_nodes(config: Config) -> Dict[str, Callable]:
         Dictionary of node functions including finalizer
     """
     node_functions = {}
-    
-    # Add LLM nodes
+
+    # Add control nodes
+    node_functions["orchestrator"] = orchestrator_node
+
+    # Add LLM analyzer nodes
     node_functions["pattern_detector"] = pattern_detector_node
     node_functions["behavioral_analizer"] = behavioral_analizer_node
     node_functions["velocity_checker"] = velocity_checker_node
     node_functions["merchant_risk_analizer"] = merchant_risk_analizer_node
     node_functions["geographic_analizer"] = geographic_analizer_node
+
+    # Add aggregation node
     node_functions["decision_aggregator"] = decision_aggregator_node
 
-    
-    # Add Tool nodes  
-    node_functions["parse_final_decision"] = parse_final_decision_tool_node
-
-    
     # Always add finalizer node for parallel execution and data merging
     node_functions["finalizer"] = finalizer_node
     
