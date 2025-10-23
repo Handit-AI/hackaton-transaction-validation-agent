@@ -24,12 +24,13 @@ class LangGraphAgent:
         self.config = config or Config()
         self.graph = graph or create_graph(self.config)
     
-    async def process(self, input_data: str) -> Any:
+    async def process(self, input_data: str, model_type: str = "vanilla") -> Any:
         """
         Process input through the LangGraph
         
         Args:
             input_data: Input data to process
+            model_type: Type of model execution ("vanilla", "full", or "online")
             
         Returns:
             Processed result from the graph
@@ -38,6 +39,13 @@ class LangGraphAgent:
             Exception: If processing fails
         """
         try:
+            # Pass model_type through the input data if it's a dict
+            if isinstance(input_data, dict):
+                input_data = {**input_data, "model_type": model_type}
+            else:
+                # For string inputs, wrap in dict
+                input_data = {"input": str(input_data), "model_type": model_type}
+            
             result = await self.graph.execute(input_data)
             return result
         except Exception as e:

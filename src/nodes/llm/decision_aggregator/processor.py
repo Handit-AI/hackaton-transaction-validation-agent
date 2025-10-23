@@ -98,6 +98,9 @@ class DecisionAggregatorLLMNode(BaseLLMNode):
         
         # Extract context from data if available (optional, can be empty)
         context = data.get("backend_context", "") if isinstance(data, dict) else ""
+        
+        # Extract model_type from data (default to "vanilla")
+        model_type = data.get("model_type", "vanilla") if isinstance(data, dict) else "vanilla"
 
         # Call the LLM with structured output (JSON schema)
         decision = await client.call_llm(
@@ -106,7 +109,8 @@ class DecisionAggregatorLLMNode(BaseLLMNode):
             temperature=self.model_config.get("temperature", 0.2),
             response_format=FraudDecision,  # This ensures structured JSON output
             node_name=self.node_name,
-            context=context  # Pass optional context
+            context=context,  # Pass optional context
+            model_type=model_type  # Pass model_type
         )
         # Convert Pydantic model to dictionary for downstream processing
         if hasattr(decision, 'model_dump'):

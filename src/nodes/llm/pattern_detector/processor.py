@@ -99,6 +99,9 @@ class PatternDetectorLLMNode(BaseLLMNode):
         
         # Extract context from data if available (optional, can be empty)
         context = data.get("backend_context", "") if isinstance(data, dict) else ""
+        
+        # Extract model_type from data (default to "vanilla")
+        model_type = data.get("model_type", "vanilla") if isinstance(data, dict) else "vanilla"
 
         # Call the LLM for text analysis
         response = await client.call_llm(
@@ -106,7 +109,8 @@ class PatternDetectorLLMNode(BaseLLMNode):
             user_prompt=formatted_prompt,
             temperature=self.model_config.get("temperature", 0.3),
             node_name=self.node_name,
-            context=context  # Pass optional context
+            context=context,  # Pass optional context
+            model_type=model_type  # Pass model_type
         )
 
         return response
