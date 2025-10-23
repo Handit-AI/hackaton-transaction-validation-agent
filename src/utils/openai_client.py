@@ -173,6 +173,9 @@ class OpenAIClient:
         actual_context = context if context else ""
         bullet_ids = None
         
+        print(f"🔍 call_llm - model_type: {model_type}, node_name: {node_name}")
+        print(f"🔍 call_llm - initial context param: {context}")
+        
         if model_type in ["full", "online"] and node_name:
             # Fetch context from API
             context_data = await self._get_context(user_prompt, node_name)
@@ -180,16 +183,27 @@ class OpenAIClient:
             if model_type == "full":
                 actual_context = context_data.get("context", {}).get("full", "")
                 bullet_ids = context_data.get("bullet_ids", {"full": [], "online": []})
+                print(f"🔍 call_llm - Using FULL context (length: {len(actual_context)} chars)")
             elif model_type == "online":
                 actual_context = context_data.get("context", {}).get("online", "")
                 bullet_ids = context_data.get("bullet_ids", {"full": [], "online": []})
+                print(f"🔍 call_llm - Using ONLINE context (length: {len(actual_context)} chars)")
+        else:
+            print(f"🔍 call_llm - Using VANILLA mode (no context)")
+        
+        print(f"🔍 call_llm - final actual_context preview: {actual_context[:150] if actual_context else 'EMPTY'}...")
         
         # Replace {context} placeholder in system prompt with actual context
         # Replace both {context} and {CONTEXT} placeholders
         formatted_system_prompt = system_prompt.replace("{context}", actual_context).replace("{CONTEXT}", actual_context)
         
-        # Store original for tracing
-        original_system_prompt = system_prompt
+        # Check if placeholder was replaced
+        if "{context}" in system_prompt or "{CONTEXT}" in system_prompt:
+            print(f"🔍 call_llm - System prompt contains {{context}} placeholder")
+        else:
+            print(f"🔍 call_llm - System prompt does NOT contain {{context}} placeholder")
+        
+        print(f"🔍 call_llm - Formatted system prompt preview: {formatted_system_prompt[:200]}...")
 
         messages = [
             {"role": "system", "content": formatted_system_prompt},

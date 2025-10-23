@@ -86,8 +86,8 @@ class DecisionAggregatorLLMNode(BaseLLMNode):
         always conforms to the required JSON schema for fraud decisions.
         """
         # Get the appropriate prompt for this node
-        system_prompt = self.prompts.get("system", "You are a helpful AI assistant.")
-        user_prompt = self.prompts.get("user_template", "Process the following input: {input}")
+        system_prompt = self.node_prompts.get("system", "You are a helpful AI assistant.")
+        user_prompt = self.node_prompts.get("user_template", "Process the following input: {input}")
 
         # Use the new OpenAI utility with structured output
         from src.utils import get_openai_client
