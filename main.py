@@ -7,6 +7,7 @@ Following FastAPI best practices for production deployment
 import os
 from typing import Dict, Any, List
 from contextlib import asynccontextmanager
+import aiohttp
 
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,6 +27,59 @@ from src.agent import LangGraphAgent
 
 # Global agent instance
 agent = None
+
+async def fetch_metrics(session_id: str) -> Dict[str, Any]:
+    """
+    Fetch metrics for a session from the self-improving engine
+    
+    Args:
+        session_id: Session ID to fetch metrics for
+        
+    Returns:
+        Dictionary containing aggregated metrics scores
+    """
+    if not session_id:
+        return {"score": 0.0}
+    
+    try:
+        # Get the base URL from environment or use default
+        trace_url = os.getenv("TRACE_API_URL", "https://self-improving-engine-api-299768392189.us-central1.run.app/api/v1/trace")
+        # Extract base URL by removing /trace or /context
+        base_url = trace_url.replace("/trace", "").replace("/context", "")
+        metrics_url = f"{base_url}/metrics/{session_id}"
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(metrics_url, timeout=aiohttp.ClientTimeout(total=300)) as response:
+                if response.status == 200:
+                    result = await response.json()
+                    
+                    # Extract and aggregate metrics
+                    metrics = result.get("metrics", {})
+                    total_accuracy = 0.0
+                    count = 0
+                    
+                    # Aggregate accuracies across all runs
+                    for run_id, run_metrics in metrics.items():
+                        if isinstance(run_metrics, dict):
+                            for metric_type, metric_data in run_metrics.items():
+                                if isinstance(metric_data, dict):
+                                    for subtype, subtype_data in metric_data.items():
+                                        if isinstance(subtype_data, dict) and "accuracy" in subtype_data:
+                                            total_accuracy += subtype_data["accuracy"]
+                                            count += 1
+                    
+                    avg_score = total_accuracy / count if count > 0 else 0.0
+                    
+                    return {
+                        "score": round(avg_score, 4),
+                        "details": result
+                    }
+                else:
+                    print(f"⚠️ Metrics API call failed with status {response.status}")
+                    return {"score": 0.0}
+    except Exception as e:
+        print(f"⚠️ Failed to fetch metrics: {e}")
+        return {"score": 0.0}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -270,6 +324,11 @@ async def process_endpoint(request: ProcessRequest):
             
             processing_time = (time.time() - start_time) * 1000
             
+            # Fetch metrics if session_id is provided
+            metrics = {}
+            if request.session_id:
+                metrics = await fetch_metrics(request.session_id)
+            
             return ProcessResponse(
                 result=results,
                 success=True,
@@ -279,6 +338,9 @@ async def process_endpoint(request: ProcessRequest):
                     "processing_time_ms": round(processing_time, 2),
                     "transaction_count": len(request.transactions),
                     "model_types": request.model_types,
+                    "session_id": request.session_id,
+                    "run_id": request.run_id,
+                    "metrics": metrics,
                     **request.metadata
                 }
             )
@@ -418,6 +480,11 @@ async def process_endpoint(request: ProcessRequest):
 
         processing_time = (time.time() - start_time) * 1000
         
+        # Fetch metrics if session_id is provided
+        metrics = {}
+        if request.session_id:
+            metrics = await fetch_metrics(request.session_id)
+        
         return ProcessResponse(
             result={
                 "transaction_id": transaction_data.get("transaction_id"),
@@ -429,6 +496,9 @@ async def process_endpoint(request: ProcessRequest):
                 "framework": "langgraph",
                 "processing_time_ms": round(processing_time, 2),
                 "model_types": request.model_types,
+                "session_id": request.session_id,
+                "run_id": request.run_id,
+                "metrics": metrics,
                 **request.metadata
             }
         )
