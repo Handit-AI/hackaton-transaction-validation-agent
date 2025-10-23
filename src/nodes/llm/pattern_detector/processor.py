@@ -44,7 +44,8 @@ class PatternDetectorLLMNode(BaseLLMNode):
                 
                 # Execute with timeout (longer for LLM calls)
                 result = await self._execute_pattern_detector_llm_logic(input_data)
-                
+                print(f"Result in pattern_detector_llm: {result}")
+
                 # Validate output
                 if not self.validate_output(result):
                     raise ValueError(f"Invalid output from {self.node_name}")
@@ -88,16 +89,19 @@ class PatternDetectorLLMNode(BaseLLMNode):
         # Get the appropriate prompt for this node
         system_prompt = self.prompts.get("system", "You are a helpful AI assistant.")
         user_prompt = self.prompts.get("user_template", "Process the following input: {input}")
-        
-        # LLM integration based on configured provider
-        model_name = self.model_config.get("name", "gpt-4")
-        
-        from langchain_openai import ChatOpenAI
-        from langchain_core.messages import HumanMessage, SystemMessage
-        llm = ChatOpenAI(model=model_name)
-        messages = [
-            SystemMessage(content=system_prompt),
-            HumanMessage(content=user_prompt.format(input=str(data)))
-        ]
-        response = await llm.agenerate([messages])
-        return response.generations[0][0].text
+
+        # Use the new OpenAI utility
+        from src.utils import get_openai_client
+        client = get_openai_client()
+
+        # Format the user prompt with the input data
+        formatted_prompt = user_prompt.format(input=str(data))
+
+        # Call the LLM for text analysis
+        response = await client.call_llm(
+            system_prompt=system_prompt,
+            user_prompt=formatted_prompt,
+            temperature=self.model_config.get("temperature", 0.3)
+        )
+
+        return response

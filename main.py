@@ -76,14 +76,55 @@ app.add_middleware(
 
 # Request/Response Models
 class ProcessRequest(BaseModel):
-    input_data: str = Field(..., description="Input data to process", min_length=1)
+    # Accept either a string or a dictionary for flexible input
+    input_data: Any = Field(None, description="Input data to process (optional for compatibility)")
+
+    # Allow direct transaction fields (fraud detection)
+    transaction: Dict[str, Any] = Field(None, description="Transaction details")
+    financial: Dict[str, Any] = Field(None, description="Financial information")
+    card: Dict[str, Any] = Field(None, description="Card details")
+    merchant: Dict[str, Any] = Field(None, description="Merchant information")
+    customer: Dict[str, Any] = Field(None, description="Customer details")
+    device: Dict[str, Any] = Field(None, description="Device information")
+    location: Dict[str, Any] = Field(None, description="Location data")
+    behavioral_profile: Dict[str, Any] = Field(None, description="Behavioral profile")
+    velocity_counters: Dict[str, Any] = Field(None, description="Velocity metrics")
+    risk_signals: Dict[str, Any] = Field(None, description="Risk signals")
+    session: Dict[str, Any] = Field(None, description="Session data")
+    channel: Dict[str, Any] = Field(None, description="Channel information")
+    authentication: Dict[str, Any] = Field(None, description="Authentication data")
+
+    # Simple transaction fields for basic testing
+    user_id: str = Field(None, description="User ID")
+    user_age_days: int = Field(None, description="Account age in days")
+    total_transactions: int = Field(None, description="Total transaction count")
+    amount: float = Field(None, description="Transaction amount")
+    time: str = Field(None, description="Transaction time (HH:MM format)")
+    merchant_name: str = Field(None, description="Merchant name")
+    merchant_category: str = Field(None, description="Merchant category")
+    currency: str = Field(None, description="Transaction currency code")
+
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Optional metadata")
-    
+
     class Config:
         schema_extra = {
             "example": {
-                "input_data": "Hello, how can you help me today?",
-                "metadata": {"user_id": "user123", "session_id": "session456"}
+                "transaction": {
+                    "transaction_id": "TXN-001",
+                    "transaction_type": "PURCHASE"
+                },
+                "financial": {
+                    "amount": 150.00,
+                    "currency": "USD"
+                },
+                "merchant": {
+                    "merchant_name": "Amazon",
+                    "merchant_category_code": "5732"
+                },
+                "customer": {
+                    "customer_id": "CUST-001",
+                    "age_of_account_days": 365
+                }
             }
         }
 
@@ -146,18 +187,112 @@ async def process_endpoint(request: ProcessRequest):
     """
     Main processing endpoint - sends input through the LangGraph agent
     This is the main entry point for agent execution, so it has tracing.
+    Accepts flexible transaction data in multiple formats.
     """
     if not agent:
         raise HTTPException(status_code=503, detail="Agent not initialized")
-    
+
     try:
         import time
+        import uuid
         start_time = time.time()
-        
-        result = await agent.process(request.input_data)
-        
+
+        # Build transaction data from whatever format is provided
+        transaction_data = {}
+
+        # Option 1: If input_data is provided (backwards compatibility)
+        if request.input_data:
+            if isinstance(request.input_data, dict):
+                transaction_data = request.input_data
+            elif isinstance(request.input_data, str):
+                # Try to parse as JSON if it's a string
+                try:
+                    import json
+                    transaction_data = json.loads(request.input_data)
+                except:
+                    # If not JSON, create a simple transaction
+                    transaction_data = {"raw_input": request.input_data}
+
+        # Option 2: Build from structured fields (complex transaction)
+        elif request.transaction or request.financial or request.merchant:
+            # Complex transaction format
+            if request.transaction:
+                transaction_data.update(request.transaction)
+            if request.financial and "amount" in request.financial:
+                transaction_data["amount"] = request.financial["amount"]
+                transaction_data["currency"] = request.financial.get("currency", "USD")
+            if request.card:
+                transaction_data["card_info"] = request.card
+            if request.merchant:
+                if "merchant_name" in request.merchant:
+                    transaction_data["merchant"] = request.merchant["merchant_name"]
+                    transaction_data["merchant_category_code"] = request.merchant.get("merchant_category_code")
+                transaction_data["merchant_data"] = request.merchant
+            if request.customer:
+                if "customer_id" in request.customer:
+                    transaction_data["user_id"] = request.customer["customer_id"]
+                if "age_of_account_days" in request.customer:
+                    transaction_data["user_age_days"] = request.customer["age_of_account_days"]
+                transaction_data["customer_data"] = request.customer
+            if request.device:
+                transaction_data["device_data"] = request.device
+            if request.location:
+                if "transaction_city" in request.location:
+                    transaction_data["location"] = f"{request.location.get('transaction_city', '')}, {request.location.get('transaction_country', '')}"
+                transaction_data["location_data"] = request.location
+            if request.behavioral_profile:
+                transaction_data["behavioral_profile"] = request.behavioral_profile
+            if request.velocity_counters:
+                transaction_data["velocity_counters"] = request.velocity_counters
+            if request.risk_signals:
+                transaction_data["risk_signals"] = request.risk_signals
+            if request.session:
+                transaction_data["session_data"] = request.session
+            if request.channel:
+                transaction_data["channel_data"] = request.channel
+            if request.authentication:
+                transaction_data["authentication_data"] = request.authentication
+
+        # Option 3: Build from simple fields (basic transaction)
+        elif request.user_id or request.amount:
+            transaction_data = {
+                "user_id": request.user_id or f"user_{uuid.uuid4().hex[:8]}",
+                "user_age_days": request.user_age_days or 180,
+                "total_transactions": request.total_transactions or 10,
+                "amount": request.amount or 100.0,
+                "time": request.time or "14:00",
+                "merchant": request.merchant_name or "Unknown Merchant",
+                "merchant_category": request.merchant_category or "General",
+                "currency": request.currency or "USD",
+                "location": "Unknown",
+                "previous_location": "Unknown"
+            }
+
+        # Option 4: Use the raw request dict if nothing else works
+        else:
+            # Get all non-None fields from the request
+            request_dict = request.dict(exclude_none=True, exclude={"metadata"})
+            if request_dict:
+                transaction_data = request_dict
+            else:
+                # Default minimal transaction
+                transaction_data = {
+                    "user_id": f"user_{uuid.uuid4().hex[:8]}",
+                    "amount": 100.0,
+                    "merchant": "Test Merchant",
+                    "user_age_days": 180,
+                    "total_transactions": 10
+                }
+
+        # Ensure transaction has an ID
+        if "transaction_id" not in transaction_data:
+            transaction_data["transaction_id"] = f"TXN-{uuid.uuid4().hex[:12].upper()}"
+
+        # Process through the agent
+        result = await agent.process(transaction_data)
+
         processing_time = (time.time() - start_time) * 1000  # Convert to milliseconds
-        
+
         return ProcessResponse(
             result=result,
             success=True,
@@ -202,7 +337,7 @@ if __name__ == "__main__":
     import time
     start_time = time.time()
     
-    port = 8000
+    port = 8001
     host = os.getenv("HOST", "0.0.0.0")
     
     print(f"🌐 Starting risk_manager FastAPI server")

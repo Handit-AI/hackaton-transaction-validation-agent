@@ -4,8 +4,17 @@ DecisionAggregator LLM node
 
 import asyncio
 from typing import Any, Dict
+from pydantic import BaseModel
 from src.base import BaseLLMNode, NodeExecutionError
 from .prompts import get_prompts
+
+
+class FraudDecision(BaseModel):
+    """Schema for fraud decision output - ensures structured JSON response"""
+    final_decision: str  # APPROVE, REVIEW, or DECLINE
+    conclusion: str  # Brief summary of the analysis
+    recommendations: list[str]  # List of recommended actions
+    reason: str  # Detailed explanation of the decision
 
 class DecisionAggregatorLLMNode(BaseLLMNode):
     """
@@ -44,7 +53,7 @@ class DecisionAggregatorLLMNode(BaseLLMNode):
                 
                 # Execute with timeout (longer for LLM calls)
                 result = await self._execute_decision_aggregator_llm_logic(input_data)
-                
+                print(f"Result in decision_aggregator_llm: {result}")
                 # Validate output
                 if not self.validate_output(result):
                     raise ValueError(f"Invalid output from {self.node_name}")
@@ -71,33 +80,34 @@ class DecisionAggregatorLLMNode(BaseLLMNode):
     
     async def _execute_decision_aggregator_llm_logic(self, data: Any) -> Any:
         """
-        Execute the specific decision_aggregator LLM logic
-        
-        This method should call your AI system with the appropriate prompts.
-        Customize this method to implement your specific LLM integration:
-        
-        - OpenAI API calls
-        - Ollama local model calls  
-        - Anthropic Claude API calls
-        - Custom model endpoints
-        - Prompt engineering and response processing
-        
-        Available prompts: {list(self.prompts.keys())}
-        Model configuration: {self.model_config}
-        """        
+        Execute the specific decision_aggregator LLM logic with structured JSON output
+
+        This method uses OpenAI's structured output feature to ensure the response
+        always conforms to the required JSON schema for fraud decisions.
+        """
         # Get the appropriate prompt for this node
         system_prompt = self.prompts.get("system", "You are a helpful AI assistant.")
         user_prompt = self.prompts.get("user_template", "Process the following input: {input}")
-        
-        # LLM integration based on configured provider
-        model_name = self.model_config.get("name", "gpt-4")
-        
-        from langchain_openai import ChatOpenAI
-        from langchain_core.messages import HumanMessage, SystemMessage
-        llm = ChatOpenAI(model=model_name)
-        messages = [
-            SystemMessage(content=system_prompt),
-            HumanMessage(content=user_prompt.format(input=str(data)))
-        ]
-        response = await llm.agenerate([messages])
-        return response.generations[0][0].text
+
+        # Use the new OpenAI utility with structured output
+        from src.utils import get_openai_client
+        client = get_openai_client()
+
+        # Format the user prompt with the input data
+        formatted_prompt = user_prompt.format(input=str(data))
+
+        # Call the LLM with structured output (JSON schema)
+        decision = await client.call_llm(
+            system_prompt=system_prompt,
+            user_prompt=formatted_prompt,
+            temperature=self.model_config.get("temperature", 0.2),
+            response_format=FraudDecision  # This ensures structured JSON output
+        )
+        # Convert Pydantic model to dictionary for downstream processing
+        if hasattr(decision, 'model_dump'):
+            return decision.model_dump()
+        elif hasattr(decision, 'dict'):
+            return decision.dict()
+        else:
+            # If it's already a dict or string, return as is
+            return decision

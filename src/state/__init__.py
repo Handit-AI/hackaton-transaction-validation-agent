@@ -10,7 +10,10 @@ from .state import (
     set_stage_result,
     add_message,
     set_error,
-    clear_error
+    clear_error,
+    update_analyzer_result,
+    calculate_weighted_risk_score,
+    determine_decision
 )
 
 __all__ = [
@@ -21,5 +24,8 @@ __all__ = [
     "set_stage_result",
     "add_message",
     "set_error",
-    "clear_error"
+    "clear_error",
+    "update_analyzer_result",
+    "calculate_weighted_risk_score",
+    "determine_decision"
 ]

@@ -19,30 +19,87 @@ class Config:
         
         # Runtime info
         self.runtime_type: str = "fastapi"
-        self.port: int = 8000
+        self.port: int = 8001
         
-        # Graph configuration for complex routing
-        # This is the primary configuration - users can modify this for parallel execution, conditional routing, etc.
-        # The finalizer node is ALWAYS included to enable parallelization and data merging
+        # Graph configuration for PARALLEL FRAUD DETECTION
+        # This configuration enables parallel execution of 5 analyzer nodes
+        # Flow: START → orchestrator → (5 parallel analyzers) → decision_aggregator → finalizer → END
         self.graph_config = {
             "nodes": {
-                "behavioral_analizer": {"node_name": "behavioral_analizer"},
-                "decision_aggregator": {"node_name": "decision_aggregator"},
-                "geographic_analizer": {"node_name": "geographic_analizer"},
-                "merchant_risk_analizer": {"node_name": "merchant_risk_analizer"},
-                "parse_final_decision": {"node_name": "parse_final_decision"},
-                "pattern_detector": {"node_name": "pattern_detector"},
-                "velocity_checker": {"node_name": "velocity_checker"},
-                "finalizer": {"node_name": "finalizer", "type": "finalizer", "description": "Merges results from parallel execution"}
+                # Control node - dispatches to analyzers
+                "orchestrator": {
+                    "node_name": "orchestrator",
+                    "type": "control",
+                    "description": "Parse transaction and dispatch to parallel analyzers"
+                },
+
+                # Analyzer nodes (run in parallel)
+                "pattern_detector": {
+                    "node_name": "pattern_detector",
+                    "type": "llm",
+                    "description": "Detect known fraud patterns and attack signatures",
+                    "model_temperature": 0.1
+                },
+                "behavioral_analizer": {
+                    "node_name": "behavioral_analizer",
+                    "type": "llm",
+                    "description": "Analyze deviations from user behavioral baseline",
+                    "model_temperature": 0.1
+                },
+                "velocity_checker": {
+                    "node_name": "velocity_checker",
+                    "type": "llm",
+                    "description": "Check for rapid-fire attacks and velocity abuse",
+                    "model_temperature": 0.1
+                },
+                "merchant_risk_analizer": {
+                    "node_name": "merchant_risk_analizer",
+                    "type": "llm",
+                    "description": "Assess merchant trustworthiness and category risk",
+                    "model_temperature": 0.1
+                },
+                "geographic_analizer": {
+                    "node_name": "geographic_analizer",
+                    "type": "llm",
+                    "description": "Detect location-based fraud and impossible travel",
+                    "model_temperature": 0.1
+                },
+
+                # Aggregation node
+                "decision_aggregator": {
+                    "node_name": "decision_aggregator",
+                    "type": "llm",
+                    "description": "Aggregate all analyzer results into final decision",
+                    "model_temperature": 0.2
+                },
+
+                # Finalizer (always included for parallel execution)
+                "finalizer": {
+                    "node_name": "finalizer",
+                    "type": "finalizer",
+                    "description": "Merges results from parallel execution"
+                }
             },
             "edges": [
-                {"from": "START", "to": "behavioral_analizer"},
+                # START to orchestrator
+                {"from": "START", "to": "orchestrator"},
+
+                # PARALLEL EXECUTION - orchestrator to all analyzers
+                {"from": "orchestrator", "to": "pattern_detector"},
+                {"from": "orchestrator", "to": "behavioral_analizer"},
+                {"from": "orchestrator", "to": "velocity_checker"},
+                {"from": "orchestrator", "to": "merchant_risk_analizer"},
+                {"from": "orchestrator", "to": "geographic_analizer"},
+
+                # CONVERGENCE - all analyzers to decision aggregator
+                {"from": "pattern_detector", "to": "decision_aggregator"},
                 {"from": "behavioral_analizer", "to": "decision_aggregator"},
-                {"from": "decision_aggregator", "to": "geographic_analizer"},
-                {"from": "geographic_analizer", "to": "merchant_risk_analizer"},
-                {"from": "merchant_risk_analizer", "to": "parse_final_decision"},
-                {"from": "parse_final_decision", "to": "pattern_detector"},
-                {"from": "pattern_detector", "to": "velocity_checker"}, {"from": "velocity_checker", "to": "finalizer"},
+                {"from": "velocity_checker", "to": "decision_aggregator"},
+                {"from": "merchant_risk_analizer", "to": "decision_aggregator"},
+                {"from": "geographic_analizer", "to": "decision_aggregator"},
+
+                # Sequential final processing
+                {"from": "decision_aggregator", "to": "finalizer"},
                 {"from": "finalizer", "to": "END"}
             ],
             "conditional_edges": []
@@ -74,6 +131,25 @@ class Config:
         self.handit_api_key = os.getenv("HANDIT_API_KEY")
         self.model_provider = os.getenv("MODEL_PROVIDER", "mock")
         self.model_name = os.getenv("MODEL_NAME", "mock-llm")
+
+        # Fraud Detection Configuration
+        self.analyzer_weights = {
+            "pattern_detector": 0.25,
+            "behavioral_analizer": 0.20,
+            "velocity_checker": 0.25,
+            "merchant_risk_analizer": 0.15,
+            "geographic_analizer": 0.15
+        }
+
+        self.risk_thresholds = {
+            "decline": 70,
+            "review": 40,
+            "approve": 0
+        }
+
+        # Parallel execution settings
+        self.parallel_timeout = 10.0  # seconds
+        self.min_analyzers_required = 3  # minimum analyzers needed for decision
     
     def get_model_config(self, node_name: str = None) -> Dict[str, Any]:
         """
