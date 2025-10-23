@@ -93,6 +93,15 @@ class PatternDetectorLLMNode(BaseLLMNode):
         # Use the new OpenAI utility
         from src.utils import get_openai_client
         client = get_openai_client()
+        
+        # Parse JSON string if data is a string
+        import json
+        if isinstance(data, str):
+            try:
+                data = json.loads(data)
+            except json.JSONDecodeError:
+                print(f"⚠️ Failed to parse JSON data: {data}")
+                data = {"input": data}
 
         # Format the user prompt with the input data
         formatted_prompt = user_prompt.format(input=str(data))
@@ -100,8 +109,11 @@ class PatternDetectorLLMNode(BaseLLMNode):
         # Extract context from data if available (optional, can be empty)
         context = data.get("backend_context", "") if isinstance(data, dict) else ""
         
-        # Extract model_type from data (default to "vanilla")
-        model_type = data.get("model_type", "vanilla") if isinstance(data, dict) else "vanilla"
+        # Extract session_id, run_id, and model_type from metadata if available
+        metadata = data.get("metadata", {}) if isinstance(data, dict) else {}
+        session_id = metadata.get("session_id") if isinstance(metadata, dict) else None
+        run_id = metadata.get("run_id") if isinstance(metadata, dict) else None
+        model_type = metadata.get("model_type", "vanilla") if isinstance(metadata, dict) else "vanilla"
 
         # Call the LLM for text analysis
         response = await client.call_llm(
@@ -110,7 +122,9 @@ class PatternDetectorLLMNode(BaseLLMNode):
             temperature=self.model_config.get("temperature", 0.3),
             node_name=self.node_name,
             context=context,  # Pass optional context
-            model_type=model_type  # Pass model_type
+            model_type=model_type,  # Pass model_type
+            session_id=session_id,  # Pass session_id
+            run_id=run_id  # Pass run_id
         )
 
         return response

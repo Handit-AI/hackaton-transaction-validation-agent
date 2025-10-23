@@ -263,13 +263,19 @@ async def pattern_detector_node(state: AgentState) -> AgentState:
 
         # Get enriched transaction data
         transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+        
+        # Get metadata from state
+        metadata = state.get("metadata", {})
+        print(f"🔍 pattern_detector node - State metadata: {metadata}")
 
-        # Prepare input for the LLM - include transaction details
+        # Prepare input for the LLM - include transaction details and metadata
         processing_input = json.dumps({
             "transaction": transaction,
             "analysis_type": "pattern_detection",
-            "focus": "fraud_patterns"
+            "focus": "fraud_patterns",
+            "metadata": metadata
         })
+        print(f"🔍 pattern_detector node - Processing input metadata: {metadata}")
 
         # Call the actual node class - it will return text analysis
         result = await node_instance.run(processing_input)
@@ -312,13 +318,19 @@ async def behavioral_analizer_node(state: AgentState) -> AgentState:
 
         # Get enriched transaction data
         transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+        
+        # Get metadata from state
+        metadata = state.get("metadata", {})
+        print(f"🔍 behavioral_analizer node - State metadata: {metadata}")
 
-        # Prepare input for the LLM - include transaction details
+        # Prepare input for the LLM - include transaction details and metadata
         processing_input = json.dumps({
             "transaction": transaction,
             "analysis_type": "behavioral_analysis",
-            "focus": "user_behavior_deviations"
+            "focus": "user_behavior_deviations",
+            "metadata": metadata
         })
+        print(f"🔍 behavioral_analizer node - Processing input metadata: {metadata}")
 
         # Call the actual node class - it will return text analysis
         result = await node_instance.run(processing_input)
@@ -361,12 +373,16 @@ async def velocity_checker_node(state: AgentState) -> AgentState:
 
         # Get enriched transaction data
         transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+        
+        # Get metadata from state
+        metadata = state.get("metadata", {})
 
-        # Prepare input for the LLM - include transaction details
+        # Prepare input for the LLM - include transaction details and metadata
         processing_input = json.dumps({
             "transaction": transaction,
             "analysis_type": "velocity_analysis",
-            "focus": "transaction_velocity_patterns"
+            "focus": "transaction_velocity_patterns",
+            "metadata": metadata
         })
 
         # Call the actual node class - it will return text analysis
@@ -410,12 +426,16 @@ async def merchant_risk_analizer_node(state: AgentState) -> AgentState:
 
         # Get enriched transaction data
         transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+        
+        # Get metadata from state
+        metadata = state.get("metadata", {})
 
-        # Prepare input for the LLM - include transaction details
+        # Prepare input for the LLM - include transaction details and metadata
         processing_input = json.dumps({
             "transaction": transaction,
             "analysis_type": "merchant_risk_analysis",
-            "focus": "merchant_trustworthiness"
+            "focus": "merchant_trustworthiness",
+            "metadata": metadata
         })
 
         # Call the actual node class - it will return text analysis
@@ -459,12 +479,16 @@ async def geographic_analizer_node(state: AgentState) -> AgentState:
 
         # Get enriched transaction data
         transaction = state.get("enriched_transaction") or state.get("transaction_data") or state.get("input", {})
+        
+        # Get metadata from state
+        metadata = state.get("metadata", {})
 
-        # Prepare input for the LLM - include transaction details
+        # Prepare input for the LLM - include transaction details and metadata
         processing_input = json.dumps({
             "transaction": transaction,
             "analysis_type": "geographic_analysis",
-            "focus": "location_based_fraud"
+            "focus": "location_based_fraud",
+            "metadata": metadata
         })
 
         # Call the actual node class - it will return text analysis
@@ -531,13 +555,17 @@ async def decision_aggregator_node(state: AgentState) -> AgentState:
         else:
             # Get the decision aggregator LLM instance
             node_instance = _get_node_instance("decision_aggregator", "llm")
+            
+            # Get metadata from state
+            metadata = state.get("metadata", {})
 
             # Prepare input for the aggregator with all analyzer texts
             processing_input = {
                 "transaction": transaction,
                 "analyzer_reports": analyzer_summaries,
                 "analyzers_completed": completed_analyzers,
-                "instruction": "Based on all the analyzer reports, provide a final fraud decision"
+                "instruction": "Based on all the analyzer reports, provide a final fraud decision",
+                "metadata": metadata
             }
 
             # The aggregator LLM will return structured JSON using schema

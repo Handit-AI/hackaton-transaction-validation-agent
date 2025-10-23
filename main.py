@@ -80,6 +80,15 @@ class ProcessRequest(BaseModel):
     
     # Accept array of transactions for batch processing
     transactions: List[Dict[str, Any]] = Field(None, description="Array of transactions to process")
+    
+    # Model types to run (vanilla, full, online)
+    model_types: List[str] = Field(default=["vanilla", "full", "online"], description="Model types to execute")
+    
+    # Session ID for tracking multiple runs
+    session_id: str = Field(None, description="Session ID to track multiple runs of the same transaction")
+    
+    # Run ID within session
+    run_id: str = Field(None, description="Run ID within session (e.g., 'run-1', 'run-2', 'run-3')")
 
     # Allow direct transaction fields (fraud detection)
     transaction: Dict[str, Any] = Field(None, description="Transaction details")
@@ -107,7 +116,7 @@ class ProcessRequest(BaseModel):
     currency: str = Field(None, description="Transaction currency code")
 
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Optional metadata")
-
+    
     class Config:
         schema_extra = {
             "example": {
@@ -190,15 +199,17 @@ async def process_endpoint(request: ProcessRequest):
     This is the main entry point for agent execution, so it has tracing.
     Accepts flexible transaction data in multiple formats.
     Can process single transactions or arrays of transactions.
+    
+    Accepts session_id and run_id as parameters for tracking multiple runs.
     """
     if not agent:
         raise HTTPException(status_code=503, detail="Agent not initialized")
-
+    
     try:
         import time
         import uuid
         start_time = time.time()
-
+        
         # Check if this is a batch request (array of transactions)
         if request.transactions:
             # Process multiple transactions
@@ -209,12 +220,44 @@ async def process_endpoint(request: ProcessRequest):
                     if "transaction_id" not in tx:
                         tx["transaction_id"] = f"TXN-{uuid.uuid4().hex[:12].upper()}"
                     
-                    # Process through the agent three times with different model types
+                    # Process through the agent with specified model types
                     transaction_results = {}
-                    for model_type in ["vanilla", "full", "online"]:
+                    for model_type in request.model_types:
                         try:
-                            result = await agent.process(tx, model_type=model_type)
-                            transaction_results[model_type] = result
+                            # Run once per model type
+                            result = await agent.process(tx, model_type=model_type, session_id=request.session_id, run_id=request.run_id)
+                            
+                            # Extract only analyzer results and final decision
+                            final_output = {}
+
+                            # If result is a dict containing 'results' (from graph execution)
+                            if isinstance(result, dict):
+                                # Get the results section which contains analyzer outputs
+                                if 'results' in result:
+                                    analyzer_results = result['results']
+
+                                    # Include all analyzer outputs
+                                    for analyzer in ['pattern_detector', 'behavioral_analizer', 'velocity_checker',
+                                                   'merchant_risk_analizer', 'geographic_analizer']:
+                                        if analyzer in analyzer_results:
+                                            final_output[analyzer] = analyzer_results[analyzer]
+
+                                    # Include the decision aggregator (final decision)
+                                    if 'decision_aggregator' in analyzer_results:
+                                        final_output['decision'] = analyzer_results['decision_aggregator']
+
+                                # Alternative: Check if analyzers are directly in result
+                                else:
+                                    for key in ['pattern_detector', 'behavioral_analizer', 'velocity_checker',
+                                               'merchant_risk_analizer', 'geographic_analizer', 'decision_aggregator']:
+                                        if key in result:
+                                            if key == 'decision_aggregator':
+                                                final_output['decision'] = result[key]
+                                            else:
+                                                final_output[key] = result[key]
+
+                            # If no analyzers found, return the raw result
+                            transaction_results[model_type] = final_output if final_output else result
                         except Exception as e:
                             transaction_results[model_type] = {"error": str(e)}
                     
@@ -235,7 +278,7 @@ async def process_endpoint(request: ProcessRequest):
                     "framework": "langgraph",
                     "processing_time_ms": round(processing_time, 2),
                     "transaction_count": len(request.transactions),
-                    "model_types": ["vanilla", "full", "online"],
+                    "model_types": request.model_types,
                     **request.metadata
                 }
             )
@@ -332,11 +375,12 @@ async def process_endpoint(request: ProcessRequest):
         if "transaction_id" not in transaction_data:
             transaction_data["transaction_id"] = f"TXN-{uuid.uuid4().hex[:12].upper()}"
 
-        # Process through the agent three times with different model types
+        # Process through the agent with specified model types
         transaction_results = {}
-        for model_type in ["vanilla", "full", "online"]:
+        for model_type in request.model_types:
             try:
-                result = await agent.process(transaction_data, model_type=model_type)
+                # Run once per model type
+                result = await agent.process(transaction_data, model_type=model_type, session_id=request.session_id, run_id=request.run_id)
                 
                 # Extract only analyzer results and final decision
                 final_output = {}
@@ -373,7 +417,7 @@ async def process_endpoint(request: ProcessRequest):
                 transaction_results[model_type] = {"error": str(e)}
 
         processing_time = (time.time() - start_time) * 1000
-
+        
         return ProcessResponse(
             result={
                 "transaction_id": transaction_data.get("transaction_id"),
@@ -384,7 +428,7 @@ async def process_endpoint(request: ProcessRequest):
                 "agent": "risk_manager",
                 "framework": "langgraph",
                 "processing_time_ms": round(processing_time, 2),
-                "model_types": ["vanilla", "full", "online"],
+                "model_types": request.model_types,
                 **request.metadata
             }
         )

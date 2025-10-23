@@ -281,7 +281,31 @@ class RiskManagerGraph:
                 if not self._validate_graph_input(input_data):
                     raise ValueError("Invalid input data for graph execution")
                 
+                # Extract session_id, run_id, and model_type from input_data if it's a dict
+                session_id = None
+                run_id = None
+                model_type = None
+                if isinstance(input_data, dict):
+                    session_id = input_data.pop("session_id", None)
+                    run_id = input_data.pop("run_id", None)
+                    model_type = input_data.pop("model_type", "vanilla")
+                    print("MODEL TYPE: ", model_type)
+                    print(f"🔍 Graph execute - Extracted session_id: {session_id}, run_id: {run_id}, model_type: {model_type} from input_data")
+                
                 # Prepare initial state
+                metadata = {"attempt": attempt + 1, "max_retries": max_retries}
+                if session_id:
+                    metadata["session_id"] = session_id
+                    print(f"🔍 Graph execute - Added session_id to metadata: {metadata.get('session_id')}")
+                if run_id:
+                    metadata["run_id"] = run_id
+                    print(f"🔍 Graph execute - Added run_id to metadata: {metadata.get('run_id')}")
+                if model_type:
+                    metadata["model_type"] = model_type
+                    print(f"🔍 Graph execute - Added model_type to metadata: {metadata.get('model_type')}")
+                
+                print(f"🔍 Graph execute - Final metadata: {metadata}")
+                
                 initial_state = {
                     "input": input_data,
                     "messages": [HumanMessage(content=str(input_data))],
@@ -289,7 +313,7 @@ class RiskManagerGraph:
                     "results": {},
                     "current_stage": self.config.agent_stages[0] if self.config.agent_stages else None,
                     "error": None,
-                    "metadata": {"attempt": attempt + 1, "max_retries": max_retries}
+                    "metadata": metadata
                 }
                 
                 # Execute the graph with timeout

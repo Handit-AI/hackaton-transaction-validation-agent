@@ -23,13 +23,15 @@ class LangGraphAgent:
         self.config = config or Config()
         self.graph = graph or create_graph(self.config)
     
-    async def process(self, input_data: str, model_type: str = "vanilla") -> Any:
+    async def process(self, input_data: str, model_type: str = "vanilla", session_id: str = None, run_id: str = None) -> Any:
         """
         Process input through the LangGraph
         
         Args:
             input_data: Input data to process
             model_type: Type of model execution ("vanilla", "full", or "online")
+            session_id: Optional session ID for tracking multiple runs
+            run_id: Optional run ID within session
             
         Returns:
             Processed result from the graph
@@ -41,9 +43,17 @@ class LangGraphAgent:
             # Pass model_type through the input data if it's a dict
             if isinstance(input_data, dict):
                 input_data = {**input_data, "model_type": model_type}
+                if session_id:
+                    input_data["session_id"] = session_id
+                if run_id:
+                    input_data["run_id"] = run_id
             else:
                 # For string inputs, wrap in dict
                 input_data = {"input": str(input_data), "model_type": model_type}
+                if session_id:
+                    input_data["session_id"] = session_id
+                if run_id:
+                    input_data["run_id"] = run_id
             
             result = await self.graph.execute(input_data)
             return result

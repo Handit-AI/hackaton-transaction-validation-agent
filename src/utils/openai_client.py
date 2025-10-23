@@ -44,7 +44,7 @@ class OpenAIClient:
             }
             
             async with aiohttp.ClientSession() as session:
-                async with session.post(self.context_url, json=payload, timeout=aiohttp.ClientTimeout(total=5)) as response:
+                async with session.post(self.context_url, json=payload, timeout=aiohttp.ClientTimeout(total=300)) as response:
                     if response.status == 200:
                         result = await response.json()
                         return {
@@ -73,7 +73,7 @@ class OpenAIClient:
                 "pattern_id": None
             }
     
-    async def _trace_transaction(self, input_text: str, node_name: str, output: Any, ground_truth: Optional[str] = None, agent_reasoning: Optional[str] = None, bullet_ids: Optional[Dict[str, list]] = None):
+    async def _trace_transaction(self, input_text: str, node_name: str, output: Any, ground_truth: Optional[str] = None, agent_reasoning: Optional[str] = None, bullet_ids: Optional[Dict[str, list]] = None, session_id: Optional[str] = None, run_id: Optional[str] = None, model_type: Optional[str] = None):
         """
         Trace transaction to the self-improving engine
         
@@ -84,6 +84,9 @@ class OpenAIClient:
             ground_truth: Optional ground truth (defaults to output)
             agent_reasoning: Optional agent's reasoning
             bullet_ids: Optional bullet IDs from context endpoint
+            session_id: Optional session ID for tracking multiple runs
+            run_id: Optional run ID within session
+            model_type: Optional model type (vanilla, full, online)
         """
         try:
             # Convert output to string if it's not already
@@ -101,8 +104,20 @@ class OpenAIClient:
             if bullet_ids:
                 payload["bullet_ids"] = bullet_ids
             
+            # Add session_id if provided
+            if session_id is not None:
+                payload["session_id"] = session_id
+            
+            # Add run_id if provided
+            if run_id is not None:
+                payload["run_id"] = run_id
+            
+            # Add model_type if provided
+            if model_type is not None:
+                payload["model_type"] = model_type
+            
             async with aiohttp.ClientSession() as session:
-                async with session.post(self.trace_url, json=payload, timeout=aiohttp.ClientTimeout(total=5)) as response:
+                async with session.post(self.trace_url, json=payload, timeout=aiohttp.ClientTimeout(total=300)) as response:
                     if response.status == 200 or response.status == 201:
                         result = await response.json()
                         print(f"✅ Traced transaction for node: {node_name}")
@@ -128,7 +143,9 @@ class OpenAIClient:
         response_format: Optional[Union[Type[BaseModel], Dict[str, Any]]] = None,
         node_name: Optional[str] = None,
         context: Optional[str] = None,
-        model_type: str = "vanilla"  # Added model_type parameter
+        model_type: str = "vanilla",
+        session_id: Optional[str] = None,
+        run_id: Optional[str] = None  # Added run_id parameter
     ) -> Union[str, BaseModel]:
         """
         Call OpenAI API with optional JSON schema support.
@@ -142,6 +159,8 @@ class OpenAIClient:
             node_name: Name of the node making the call (for tracing)
             context: Optional context string to inject into system prompt (replaces {context} placeholder)
             model_type: Type of model execution ("vanilla", "full", or "online") - default is "vanilla"
+            session_id: Optional session ID for tracking multiple runs
+            run_id: Optional run ID within session
 
         Returns:
             String response or parsed Pydantic model instance
@@ -198,7 +217,7 @@ class OpenAIClient:
                 
                 # Trace the transaction if node_name is provided
                 if node_name:
-                    await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids)
+                    await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
                 
                 return result
             else:
@@ -219,7 +238,7 @@ class OpenAIClient:
                 
                 # Trace the transaction if node_name is provided
                 if node_name:
-                    await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids)
+                    await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
                 
                 return result
         else:
@@ -232,7 +251,7 @@ class OpenAIClient:
             
             # Trace the transaction if node_name is provided
             if node_name:
-                await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids)
+                await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
             
             return result
 
