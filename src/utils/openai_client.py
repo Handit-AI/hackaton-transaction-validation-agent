@@ -5,6 +5,7 @@ OpenAI client utility for LLM calls with JSON schema support
 import os
 import json
 import aiohttp
+import traceback
 from typing import Dict, Any, Optional, Union, Type
 from openai import AsyncOpenAI
 from pydantic import BaseModel
@@ -21,7 +22,6 @@ class OpenAIClient:
 
         self.client = AsyncOpenAI(api_key=api_key)
         self.default_model = os.getenv("MODEL_NAME_HACKATON", "gpt-4o-mini")
-        self.tracking_url = os.getenv("TRACKING_API_URL", "https://self-improving-engine-api-299768392189.us-central1.run.app/api/v1/track")
         self.context_url = os.getenv("CONTEXT_API_URL", "https://self-improving-engine-api-299768392189.us-central1.run.app/api/v1/context")
         self.trace_url = os.getenv("TRACE_API_URL", "https://self-improving-engine-api-299768392189.us-central1.run.app/api/v1/trace")
     
@@ -54,6 +54,10 @@ class OpenAIClient:
                         }
                     else:
                         print(f"⚠️ Context API call failed with status {response.status}")
+                        error_text = await response.text()
+                        print(f"Error response: {error_text}")
+                        print(f"URL: {self.context_url}")
+                        print(f"Payload: {payload}")
                         return {
                             "context": {"full": "", "online": ""},
                             "bullet_ids": {"full": [], "online": []},
@@ -61,6 +65,8 @@ class OpenAIClient:
                         }
         except Exception as e:
             print(f"⚠️ Failed to get context: {e}")
+            print(f"Traceback: {traceback.format_exc()}")
+            print(f"URL: {self.context_url}")
             return {
                 "context": {"full": "", "online": ""},
                 "bullet_ids": {"full": [], "online": []},
@@ -97,49 +103,22 @@ class OpenAIClient:
             
             async with aiohttp.ClientSession() as session:
                 async with session.post(self.trace_url, json=payload, timeout=aiohttp.ClientTimeout(total=5)) as response:
-                    if response.status == 200:
+                    if response.status == 200 or response.status == 201:
                         result = await response.json()
                         print(f"✅ Traced transaction for node: {node_name}")
                         return result
                     else:
+                        error_text = await response.text()
                         print(f"⚠️ Trace API call failed with status {response.status}")
+                        print(f"Error response: {error_text}")
+                        print(f"URL: {self.trace_url}")
+                        print(f"Payload: {payload}")
         except Exception as e:
             print(f"⚠️ Failed to trace transaction: {e}")
+            print(f"Traceback: {traceback.format_exc()}")
+            print(f"URL: {self.trace_url}")
+            print(f"Payload: {payload}")
     
-    async def _track_llm_call(self, system_prompt: str, user_prompt: str, output: Any, model: str, node_name: str):
-        """
-        Track LLM call to the self-improving engine
-        
-        Args:
-            system_prompt: System prompt used
-            user_prompt: User prompt used
-            output: Response from the LLM
-            model: Model name used
-            node_name: Name of the node making the call
-        """
-        try:
-            # Convert output to string if it's not already
-            output_str = json.dumps(output) if isinstance(output, (dict, list)) else str(output)
-            
-            payload = {
-                "systemPrompt": system_prompt,
-                "userPrompt": user_prompt,
-                "output": output_str,
-                "model": model,
-                "node": node_name
-            }
-            
-            # Make async HTTP request to tracking endpoint
-            async with aiohttp.ClientSession() as session:
-                async with session.post(self.tracking_url, json=payload, timeout=aiohttp.ClientTimeout(total=5)) as response:
-                    if response.status != 200 and response.status != 201:
-                        print(f"⚠️ Tracking call failed with status {response.status}")
-                    else:
-                        print(f"✅ Tracked LLM call for node: {node_name}")
-        except Exception as e:
-            # Don't fail the main request if tracking fails
-            print(f"⚠️ Failed to track LLM call: {e}")
-
     async def call_llm(
         self,
         system_prompt: str,
@@ -160,7 +139,7 @@ class OpenAIClient:
             model: Model name (defaults to env variable)
             temperature: Temperature for sampling
             response_format: Optional Pydantic model or JSON schema for structured output
-            node_name: Name of the node making the call (for tracking)
+            node_name: Name of the node making the call (for tracing)
             context: Optional context string to inject into system prompt (replaces {context} placeholder)
             model_type: Type of model execution ("vanilla", "full", or "online") - default is "vanilla"
 
@@ -176,6 +155,7 @@ class OpenAIClient:
         if model_type in ["full", "online"] and node_name:
             # Fetch context from API
             context_data = await self._get_context(user_prompt, node_name)
+            print(f"Context data: {context_data}")
             if model_type == "full":
                 actual_context = context_data.get("context", {}).get("full", "")
                 bullet_ids = context_data.get("bullet_ids", {"full": [], "online": []})
@@ -187,7 +167,7 @@ class OpenAIClient:
         # Replace both {context} and {CONTEXT} placeholders
         formatted_system_prompt = system_prompt.replace("{context}", actual_context).replace("{CONTEXT}", actual_context)
         
-        # Store original for tracking
+        # Store original for tracing
         original_system_prompt = system_prompt
 
         messages = [
@@ -216,10 +196,8 @@ class OpenAIClient:
                 # Return the parsed object
                 result = response.choices[0].message.parsed
                 
-                # Track the call if node_name is provided (use original prompt for tracking)
+                # Trace the transaction if node_name is provided
                 if node_name:
-                    await self._track_llm_call(original_system_prompt, user_prompt, result, model_name, node_name)
-                    # Always trace the transaction
                     await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids)
                 
                 return result
@@ -239,10 +217,8 @@ class OpenAIClient:
                 except json.JSONDecodeError:
                     result = content
                 
-                # Track the call if node_name is provided (use original prompt for tracking)
+                # Trace the transaction if node_name is provided
                 if node_name:
-                    await self._track_llm_call(original_system_prompt, user_prompt, result, model_name, node_name)
-                    # Always trace the transaction
                     await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids)
                 
                 return result
@@ -254,10 +230,8 @@ class OpenAIClient:
 
             result = response.choices[0].message.content
             
-            # Track the call if node_name is provided (use original prompt for tracking)
+            # Trace the transaction if node_name is provided
             if node_name:
-                await self._track_llm_call(original_system_prompt, user_prompt, result, model_name, node_name)
-                # Always trace the transaction
                 await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids)
             
             return result

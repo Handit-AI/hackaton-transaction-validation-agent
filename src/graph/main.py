@@ -6,7 +6,6 @@ from typing import Dict, Any, List, TypedDict, Annotated
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
-from handit_ai import tracing
 import asyncio
 
 class GraphExecutionError(Exception):
@@ -17,7 +16,6 @@ from ..config import Config
 from ..state import AgentState
 from .nodes import get_graph_nodes
 
-@tracing(agent="risk_manager_graph")
 class RiskManagerGraph:
     def __init__(self, config: Config):
         self.config = config

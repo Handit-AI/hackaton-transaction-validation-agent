@@ -16,13 +16,11 @@ from pydantic import BaseModel, Field
 import uvicorn
 from dotenv import load_dotenv
 
-from handit_ai import configure, tracing
 
 # Load environment variables
 load_dotenv()
 
 # Configure Handit
-configure(HANDIT_API_KEY=os.getenv("HANDIT_API_KEY"))
 
 from src.agent import LangGraphAgent
 
@@ -186,7 +184,6 @@ async def root():
     }
 
 @app.post("/process", response_model=ProcessResponse, tags=["Agent"])
-@tracing(agent="risk_manager")
 async def process_endpoint(request: ProcessRequest):
     """
     Main processing endpoint - sends input through the LangGraph agent

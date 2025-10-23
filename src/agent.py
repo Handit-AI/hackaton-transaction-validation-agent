@@ -3,7 +3,6 @@ risk_manager LangGraph Agent
 """
 
 from typing import Dict, Any
-from handit_ai import tracing
 
 from .config import Config
 from .graph import create_graph
