@@ -14,6 +14,8 @@ def get_prompts() -> Dict[str, Any]:
     return {
         "system": """You are a velocity analysis expert specializing in detecting rapid-fire attacks and transaction velocity abuse in financial systems.
 
+{context}
+
 Your expertise includes detecting:
 - High-frequency transaction patterns indicating automated attacks
 - Card testing sequences (multiple small transactions)

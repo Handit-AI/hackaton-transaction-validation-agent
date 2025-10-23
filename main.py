@@ -5,7 +5,7 @@ Following FastAPI best practices for production deployment
 """
 
 import os
-from typing import Dict, Any
+from typing import Dict, Any, List
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request, status
@@ -79,6 +79,9 @@ app.add_middleware(
 class ProcessRequest(BaseModel):
     # Accept either a string or a dictionary for flexible input
     input_data: Any = Field(None, description="Input data to process (optional for compatibility)")
+    
+    # Accept array of transactions for batch processing
+    transactions: List[Dict[str, Any]] = Field(None, description="Array of transactions to process")
 
     # Allow direct transaction fields (fraud detection)
     transaction: Dict[str, Any] = Field(None, description="Transaction details")
@@ -189,6 +192,7 @@ async def process_endpoint(request: ProcessRequest):
     Main processing endpoint - sends input through the LangGraph agent
     This is the main entry point for agent execution, so it has tracing.
     Accepts flexible transaction data in multiple formats.
+    Can process single transactions or arrays of transactions.
     """
     if not agent:
         raise HTTPException(status_code=503, detail="Agent not initialized")
@@ -198,6 +202,37 @@ async def process_endpoint(request: ProcessRequest):
         import uuid
         start_time = time.time()
 
+        # Check if this is a batch request (array of transactions)
+        if request.transactions:
+            # Process multiple transactions
+            results = []
+            for idx, tx in enumerate(request.transactions):
+                try:
+                    # Ensure transaction has an ID
+                    if "transaction_id" not in tx:
+                        tx["transaction_id"] = f"TXN-{uuid.uuid4().hex[:12].upper()}"
+                    
+                    # Process through the agent
+                    result = await agent.process(tx)
+                    results.append(result)
+                except Exception as e:
+                    results.append({"error": str(e), "transaction_id": tx.get("transaction_id", "unknown")})
+            
+            processing_time = (time.time() - start_time) * 1000
+            
+            return ProcessResponse(
+                result=results,
+                success=True,
+                metadata={
+                    "agent": "risk_manager",
+                    "framework": "langgraph",
+                    "processing_time_ms": round(processing_time, 2),
+                    "transaction_count": len(request.transactions),
+                    **request.metadata
+                }
+            )
+
+        # Single transaction processing (existing logic)
         # Build transaction data from whatever format is provided
         transaction_data = {}
 

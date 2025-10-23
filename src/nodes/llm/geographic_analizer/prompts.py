@@ -14,6 +14,8 @@ def get_prompts() -> Dict[str, Any]:
     return {
         "system": """You are a geographic fraud detection expert specializing in location-based risk analysis and impossible travel detection.
 
+{context}
+
 Your expertise includes:
 - Impossible travel detection (distance vs time calculations)
 - High-risk geographic region identification

@@ -96,11 +96,16 @@ class MerchantRiskAnalizerLLMNode(BaseLLMNode):
 
         # Format the user prompt with the input data
         formatted_prompt = user_prompt.format(input=str(data))
+        
+        # Extract context from data if available (optional, can be empty)
+        context = data.get("backend_context", "") if isinstance(data, dict) else ""
 
         # Call the LLM for text analysis
         response = await client.call_llm(
             system_prompt=system_prompt,
             user_prompt=formatted_prompt,
-            temperature=self.model_config.get("temperature", 0.3)
+            temperature=self.model_config.get("temperature", 0.3),
+            node_name=self.node_name,
+            context=context  # Pass optional context
         )
         return response

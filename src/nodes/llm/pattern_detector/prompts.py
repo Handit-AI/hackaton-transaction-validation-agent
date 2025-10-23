@@ -14,6 +14,8 @@ def get_prompts() -> Dict[str, Any]:
     return {
         "system": """You are an expert fraud pattern detection system specializing in identifying known fraud signatures and attack patterns in financial transactions.
 
+{context}
+
 Your expertise includes detecting:
 - Synthetic identity fraud (new accounts with suspicious characteristics)
 - Account takeover patterns (sudden behavioral changes)

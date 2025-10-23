@@ -95,13 +95,18 @@ class DecisionAggregatorLLMNode(BaseLLMNode):
 
         # Format the user prompt with the input data
         formatted_prompt = user_prompt.format(input=str(data))
+        
+        # Extract context from data if available (optional, can be empty)
+        context = data.get("backend_context", "") if isinstance(data, dict) else ""
 
         # Call the LLM with structured output (JSON schema)
         decision = await client.call_llm(
             system_prompt=system_prompt,
             user_prompt=formatted_prompt,
             temperature=self.model_config.get("temperature", 0.2),
-            response_format=FraudDecision  # This ensures structured JSON output
+            response_format=FraudDecision,  # This ensures structured JSON output
+            node_name=self.node_name,
+            context=context  # Pass optional context
         )
         # Convert Pydantic model to dictionary for downstream processing
         if hasattr(decision, 'model_dump'):

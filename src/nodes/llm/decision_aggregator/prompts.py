@@ -14,6 +14,8 @@ def get_prompts() -> Dict[str, Any]:
     return {
         "system": """You are the Chief Fraud Decision Maker responsible for synthesizing multiple analyzer reports into a final fraud decision.
 
+{context}
+
 Your responsibilities:
 - Review and weight evidence from all analyzers
 - Identify corroborating patterns across different analyses

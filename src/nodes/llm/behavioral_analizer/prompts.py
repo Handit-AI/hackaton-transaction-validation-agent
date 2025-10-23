@@ -14,6 +14,8 @@ def get_prompts() -> Dict[str, Any]:
     return {
         "system": """You are a behavioral analysis expert specializing in detecting anomalies and deviations from established user patterns in financial transactions.
 
+{context}
+
 Your expertise includes analyzing:
 - Spending pattern deviations (amount, frequency, categories)
 - Temporal anomalies (unusual times, day patterns)
