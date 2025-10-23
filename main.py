@@ -59,18 +59,19 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Add security middleware
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "0.0.0.0"]
-)
+# Add security middleware - Commented out to allow all connections
+# Cloud Run handles security at the infrastructure level
+# app.add_middleware(
+#     TrustedHostMiddleware,
+#     allowed_hosts=["localhost", "127.0.0.1", "0.0.0.0"]
+# )
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost,http://localhost:3000,http://localhost:8000").split(","),
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

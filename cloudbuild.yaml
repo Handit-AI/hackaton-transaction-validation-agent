@@ -25,6 +25,8 @@ steps:
       - '--set-secrets'
       - 'OPENAI_API_KEY=OPENAI_API_KEY:latest'
       - '--set-env-vars'
+      - 'ENVIRONMENT=production'
+      - '--set-env-vars'
       - 'MODEL_PROVIDER=$_MODEL_PROVIDER'
       - '--set-env-vars'
       - 'MODEL_NAME=$_MODEL_NAME'
