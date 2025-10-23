@@ -121,18 +121,20 @@ class OpenAIClient:
                     if response.status == 200 or response.status == 201:
                         result = await response.json()
                         print(f"✅ Traced transaction for node: {node_name}")
-                        return result
+                        return result  # Return the full response including generated_bullets
                     else:
                         error_text = await response.text()
                         print(f"⚠️ Trace API call failed with status {response.status}")
                         print(f"Error response: {error_text}")
                         print(f"URL: {self.trace_url}")
                         print(f"Payload: {payload}")
+                        return None
         except Exception as e:
             print(f"⚠️ Failed to trace transaction: {e}")
             print(f"Traceback: {traceback.format_exc()}")
             print(f"URL: {self.trace_url}")
             print(f"Payload: {payload}")
+            return None
     
     async def call_llm(
         self,
@@ -217,7 +219,9 @@ class OpenAIClient:
                 
                 # Trace the transaction if node_name is provided
                 if node_name:
-                    await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
+                    trace_response = await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
+                    if trace_response and "generated_bullets" in trace_response:
+                        add_generated_bullets(node_name, trace_response["generated_bullets"])
                 
                 return result
             else:
@@ -238,7 +242,9 @@ class OpenAIClient:
                 
                 # Trace the transaction if node_name is provided
                 if node_name:
-                    await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
+                    trace_response = await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
+                    if trace_response and "generated_bullets" in trace_response:
+                        add_generated_bullets(node_name, trace_response["generated_bullets"])
                 
                 return result
         else:
@@ -251,7 +257,9 @@ class OpenAIClient:
             
             # Trace the transaction if node_name is provided
             if node_name:
-                await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
+                trace_response = await self._trace_transaction(user_prompt, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
+                if trace_response and "generated_bullets" in trace_response:
+                    add_generated_bullets(node_name, trace_response["generated_bullets"])
             
             return result
 
@@ -260,9 +268,28 @@ class OpenAIClient:
 # Global client instance
 _client = None
 
+# Global tracker for generated bullets
+_generated_bullets = {}
+
 def get_openai_client() -> OpenAIClient:
     """Get or create OpenAI client singleton"""
     global _client
     if _client is None:
         _client = OpenAIClient()
     return _client
+
+def get_generated_bullets() -> Dict[str, Any]:
+    """Get generated bullets tracker"""
+    global _generated_bullets
+    return _generated_bullets
+
+def clear_generated_bullets():
+    """Clear generated bullets tracker"""
+    global _generated_bullets
+    _generated_bullets = {}
+
+def add_generated_bullets(node_name: str, bullets: Any):
+    """Add generated bullets for a node"""
+    global _generated_bullets
+    if node_name and bullets:
+        _generated_bullets[node_name] = bullets

@@ -266,6 +266,11 @@ async def process_endpoint(request: ProcessRequest):
         
         # Check if this is a batch request (array of transactions)
         if request.transactions:
+            from src.utils import get_generated_bullets, clear_generated_bullets
+            
+            # Clear generated bullets at the start of processing
+            clear_generated_bullets()
+            
             # Process multiple transactions
             results = []
             for idx, tx in enumerate(request.transactions):
@@ -324,6 +329,9 @@ async def process_endpoint(request: ProcessRequest):
             
             processing_time = (time.time() - start_time) * 1000
             
+            # Get generated bullets
+            generated_bullets = get_generated_bullets()
+            
             # Fetch metrics if session_id is provided
             metrics = {}
             if request.session_id:
@@ -341,11 +349,17 @@ async def process_endpoint(request: ProcessRequest):
                     "session_id": request.session_id,
                     "run_id": request.run_id,
                     "metrics": metrics,
+                    "generated_bullets": generated_bullets,
                     **request.metadata
                 }
             )
 
         # Single transaction processing (existing logic)
+        from src.utils import get_generated_bullets, clear_generated_bullets
+        
+        # Clear generated bullets at the start of processing
+        clear_generated_bullets()
+        
         # Build transaction data from whatever format is provided
         transaction_data = {}
 
@@ -480,6 +494,9 @@ async def process_endpoint(request: ProcessRequest):
 
         processing_time = (time.time() - start_time) * 1000
         
+        # Get generated bullets
+        generated_bullets = get_generated_bullets()
+        
         # Fetch metrics if session_id is provided
         metrics = {}
         if request.session_id:
@@ -499,6 +516,7 @@ async def process_endpoint(request: ProcessRequest):
                 "session_id": request.session_id,
                 "run_id": request.run_id,
                 "metrics": metrics,
+                "generated_bullets": generated_bullets,
                 **request.metadata
             }
         )
