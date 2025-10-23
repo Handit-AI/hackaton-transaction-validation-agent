@@ -1,0 +1,1805 @@
+{
+  "use_cases": [
+    {
+      "name": "Business Trip First International",
+      "description": "First international transaction on business trip - legitimate but unusual",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.35,
+      "why_subtle": "First international use, expensive, but aligns with business traveler profile",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A001",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T21:45:12.234Z",
+          "authorization_code": "AUTH891234",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 3847.92,
+          "currency": "USD",
+          "exchange_rate": 0.92,
+          "original_currency": "EUR",
+          "fees": 115.44
+        },
+        "card": {
+          "masked_pan": "************4829",
+          "bin": "414720",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_subtype": "BUSINESS",
+          "card_present": true,
+          "entry_mode": "CHIP",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 892
+        },
+        "merchant": {
+          "merchant_id": "MID-98234",
+          "merchant_name": "Marriott Paris Champs",
+          "merchant_category_code": "7011",
+          "merchant_category": "Hotels and Motels",
+          "merchant_city": "Paris",
+          "merchant_state": "IDF",
+          "merchant_country": "FR",
+          "merchant_postal_code": "75008",
+          "terminal_id": "TERM-MAR-892",
+          "merchant_age_days": 3650
+        },
+        "customer": {
+          "customer_id": "CUST-2019-8F3A",
+          "customer_since": "2019-02-10",
+          "age_of_account_days": 1805,
+          "customer_age": 42,
+          "customer_segment": "BUSINESS",
+          "annual_income": 125000,
+          "credit_score": 782,
+          "email_domain": "techcorp.com",
+          "phone_carrier": "VERIZON",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2019-3A9C",
+          "device_type": "POS",
+          "device_os": "EMBEDDED",
+          "device_os_version": "3.2.1",
+          "browser": "N/A",
+          "browser_version": "N/A",
+          "days_since_device_first_seen": 0,
+          "device_trust_score": 0.95,
+          "screen_resolution": "N/A",
+          "timezone": "Europe/Paris"
+        },
+        "location": {
+          "transaction_ip": "82.234.156.78",
+          "transaction_city": "Paris",
+          "transaction_state": "IDF",
+          "transaction_country": "FR",
+          "transaction_postal_code": "75008",
+          "home_city": "San Francisco",
+          "home_state": "CA",
+          "home_country": "US",
+          "distance_from_home_miles": 5582,
+          "location_risk_score": 0.3
+        },
+        "authentication": {
+          "authentication_method": "CHIP_PIN",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "NOT_REQUIRED",
+          "mfa_status": "N/A",
+          "password_age_days": 45,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 0,
+          "session_id": "N/A",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 3,
+          "transactions_this_hour": 1,
+          "amount_today": 4234.56,
+          "unique_merchants_today": 3,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 12,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 234.50,
+          "typical_day_of_week": "THURSDAY",
+          "typical_time_of_day": "14:00-18:00",
+          "merchant_category_consistency": 0.75,
+          "spending_pattern_stability": 0.82,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Account Takeover Subtle Pattern",
+      "description": "Sophisticated ATO mimicking user behavior but with subtle tells",
+      "expected_decision": "DECLINE",
+      "fraud_probability": 0.85,
+      "why_subtle": "Attacker studied patterns, but slight velocity and device anomalies reveal fraud",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A002",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T14:32:45.567Z",
+          "authorization_code": "AUTH234567",
+          "processing_network": "MASTERCARD"
+        },
+        "financial": {
+          "amount": 487.23,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************7234",
+          "bin": "533948",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_subtype": "REWARDS",
+          "card_present": false,
+          "entry_mode": "MANUAL",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 1456
+        },
+        "merchant": {
+          "merchant_id": "MID-45678",
+          "merchant_name": "Amazon.com",
+          "merchant_category_code": "5999",
+          "merchant_category": "Miscellaneous Retail",
+          "merchant_city": "Seattle",
+          "merchant_state": "WA",
+          "merchant_country": "US",
+          "merchant_postal_code": "98109",
+          "terminal_id": "WEB-AMZ-001",
+          "merchant_age_days": 9125
+        },
+        "customer": {
+          "customer_id": "CUST-2018-3D8E",
+          "customer_since": "2018-11-23",
+          "age_of_account_days": 1889,
+          "customer_age": 35,
+          "customer_segment": "STANDARD",
+          "annual_income": 65000,
+          "credit_score": 695,
+          "email_domain": "gmail.com",
+          "phone_carrier": "AT&T",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2024-8B2C",
+          "device_type": "MOBILE",
+          "device_os": "Android",
+          "device_os_version": "13",
+          "browser": "Chrome",
+          "browser_version": "120.0",
+          "days_since_device_first_seen": 0,
+          "device_trust_score": 0.42,
+          "screen_resolution": "1080x2400",
+          "timezone": "America/Chicago"
+        },
+        "location": {
+          "transaction_ip": "72.182.94.123",
+          "transaction_city": "Chicago",
+          "transaction_state": "IL",
+          "transaction_country": "US",
+          "transaction_postal_code": "60601",
+          "home_city": "Chicago",
+          "home_state": "IL",
+          "home_country": "US",
+          "distance_from_home_miles": 2.3,
+          "location_risk_score": 0.15
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "SMS",
+          "mfa_status": "SUCCESS",
+          "password_age_days": 2,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 234,
+          "session_id": "SESS-2024-9C3D",
+          "risk_based_auth_triggered": true
+        },
+        "velocity_counters": {
+          "transactions_today": 5,
+          "transactions_this_hour": 3,
+          "amount_today": 1234.67,
+          "unique_merchants_today": 4,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 8,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 1,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 125.50,
+          "typical_day_of_week": "SATURDAY",
+          "typical_time_of_day": "10:00-12:00",
+          "merchant_category_consistency": 0.82,
+          "spending_pattern_stability": 0.71,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Elderly Customer Service Help",
+      "description": "Elderly customer getting help from grandchild - legitimate assistance",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.25,
+      "why_subtle": "Different device, typing pattern, but legitimate family help scenario",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A003",
+          "transaction_type": "PAYMENT",
+          "transaction_datetime": "2024-01-20T15:15:33.789Z",
+          "authorization_code": "AUTH345678",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 156.42,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************9012",
+          "bin": "421783",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_subtype": "STANDARD",
+          "card_present": false,
+          "entry_mode": "MANUAL",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 2890
+        },
+        "merchant": {
+          "merchant_id": "MID-78234",
+          "merchant_name": "ComEd Utilities",
+          "merchant_category_code": "4900",
+          "merchant_category": "Utilities",
+          "merchant_city": "Chicago",
+          "merchant_state": "IL",
+          "merchant_country": "US",
+          "merchant_postal_code": "60606",
+          "terminal_id": "WEB-COMED-01",
+          "merchant_age_days": 7300
+        },
+        "customer": {
+          "customer_id": "CUST-2009-6B4F",
+          "customer_since": "2009-05-30",
+          "age_of_account_days": 5348,
+          "customer_age": 78,
+          "customer_segment": "SENIOR",
+          "annual_income": 42000,
+          "credit_score": 745,
+          "email_domain": "aol.com",
+          "phone_carrier": "AT&T",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2023-4C8D",
+          "device_type": "DESKTOP",
+          "device_os": "MacOS",
+          "device_os_version": "14.0",
+          "browser": "Safari",
+          "browser_version": "17.0",
+          "days_since_device_first_seen": 89,
+          "device_trust_score": 0.68,
+          "screen_resolution": "2560x1600",
+          "timezone": "America/Chicago"
+        },
+        "location": {
+          "transaction_ip": "98.234.156.89",
+          "transaction_city": "Naperville",
+          "transaction_state": "IL",
+          "transaction_country": "US",
+          "transaction_postal_code": "60540",
+          "home_city": "Chicago",
+          "home_state": "IL",
+          "home_country": "US",
+          "distance_from_home_miles": 28.5,
+          "location_risk_score": 0.10
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 3,
+          "mfa_type": "EMAIL",
+          "mfa_status": "SUCCESS",
+          "password_age_days": 456,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 892,
+          "session_id": "SESS-2024-7A8B",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 1,
+          "transactions_this_hour": 1,
+          "amount_today": 156.42,
+          "unique_merchants_today": 1,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 2,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 2
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 142.30,
+          "typical_day_of_week": "MONDAY",
+          "typical_time_of_day": "09:00-11:00",
+          "merchant_category_consistency": 0.95,
+          "spending_pattern_stability": 0.93,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": false,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Friendly Fraud Setup",
+      "description": "Customer planning chargeback - buying from new seller",
+      "expected_decision": "DECLINE",
+      "fraud_probability": 0.75,
+      "why_subtle": "Legitimate customer history but pattern matches friendly fraud preparation",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A004",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T22:45:12.123Z",
+          "authorization_code": "AUTH456789",
+          "processing_network": "MASTERCARD"
+        },
+        "financial": {
+          "amount": 1899.99,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************3456",
+          "bin": "445062",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_subtype": "REWARDS",
+          "card_present": false,
+          "entry_mode": "SAVED",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 623
+        },
+        "merchant": {
+          "merchant_id": "MID-23456",
+          "merchant_name": "TechDeals2024",
+          "merchant_category_code": "5732",
+          "merchant_category": "Electronics Stores",
+          "merchant_city": "Miami",
+          "merchant_state": "FL",
+          "merchant_country": "US",
+          "merchant_postal_code": "33101",
+          "terminal_id": "WEB-TECH-892",
+          "merchant_age_days": 23
+        },
+        "customer": {
+          "customer_id": "CUST-2021-7A9C",
+          "customer_since": "2021-09-14",
+          "age_of_account_days": 858,
+          "customer_age": 29,
+          "customer_segment": "STANDARD",
+          "annual_income": 48000,
+          "credit_score": 642,
+          "email_domain": "gmail.com",
+          "phone_carrier": "T-MOBILE",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2021-9C3E",
+          "device_type": "MOBILE",
+          "device_os": "iOS",
+          "device_os_version": "17.2",
+          "browser": "Safari",
+          "browser_version": "17.0",
+          "days_since_device_first_seen": 456,
+          "device_trust_score": 0.52,
+          "screen_resolution": "1170x2532",
+          "timezone": "America/New_York"
+        },
+        "location": {
+          "transaction_ip": "73.94.234.156",
+          "transaction_city": "New York",
+          "transaction_state": "NY",
+          "transaction_country": "US",
+          "transaction_postal_code": "10001",
+          "home_city": "New York",
+          "home_state": "NY",
+          "home_country": "US",
+          "distance_from_home_miles": 0.8,
+          "location_risk_score": 0.22
+        },
+        "authentication": {
+          "authentication_method": "BIOMETRIC",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "NOT_REQUIRED",
+          "mfa_status": "N/A",
+          "password_age_days": 89,
+          "biometric_match_score": 0.94,
+          "session_duration_seconds": 567,
+          "session_id": "SESS-2024-5D6E",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 3,
+          "transactions_this_hour": 1,
+          "amount_today": 2145.32,
+          "unique_merchants_today": 3,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 1,
+          "card_not_present_30d": 18,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 87.50,
+          "typical_day_of_week": "FRIDAY",
+          "typical_time_of_day": "18:00-21:00",
+          "merchant_category_consistency": 0.45,
+          "spending_pattern_stability": 0.54,
+          "international_activity_normal": false,
+          "night_activity_normal": true,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "College Student End of Semester",
+      "description": "Student maxing card for books/supplies - legitimate but risky pattern",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.40,
+      "why_subtle": "High utilization, multiple purchases, but consistent with semester start",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A005",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T10:30:45.456Z",
+          "authorization_code": "AUTH567890",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 487.32,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************8901",
+          "bin": "490501",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_subtype": "STUDENT",
+          "card_present": true,
+          "entry_mode": "CHIP",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 456
+        },
+        "merchant": {
+          "merchant_id": "MID-89234",
+          "merchant_name": "University Bookstore",
+          "merchant_category_code": "5942",
+          "merchant_category": "Book Stores",
+          "merchant_city": "Ann Arbor",
+          "merchant_state": "MI",
+          "merchant_country": "US",
+          "merchant_postal_code": "48109",
+          "terminal_id": "TERM-UNI-234",
+          "merchant_age_days": 5475
+        },
+        "customer": {
+          "customer_id": "CUST-2022-5C7E",
+          "customer_since": "2022-08-15",
+          "age_of_account_days": 523,
+          "customer_age": 20,
+          "customer_segment": "STUDENT",
+          "annual_income": 12000,
+          "credit_score": 645,
+          "email_domain": "umich.edu",
+          "phone_carrier": "VERIZON",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2022-6F8G",
+          "device_type": "POS",
+          "device_os": "EMBEDDED",
+          "device_os_version": "2.3.4",
+          "browser": "N/A",
+          "browser_version": "N/A",
+          "days_since_device_first_seen": 234,
+          "device_trust_score": 0.92,
+          "screen_resolution": "N/A",
+          "timezone": "America/Detroit"
+        },
+        "location": {
+          "transaction_ip": "141.211.234.56",
+          "transaction_city": "Ann Arbor",
+          "transaction_state": "MI",
+          "transaction_country": "US",
+          "transaction_postal_code": "48109",
+          "home_city": "Ann Arbor",
+          "home_state": "MI",
+          "home_country": "US",
+          "distance_from_home_miles": 0.5,
+          "location_risk_score": 0.05
+        },
+        "authentication": {
+          "authentication_method": "CHIP_PIN",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "NOT_REQUIRED",
+          "mfa_status": "N/A",
+          "password_age_days": 67,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 0,
+          "session_id": "N/A",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 4,
+          "transactions_this_hour": 2,
+          "amount_today": 892.45,
+          "unique_merchants_today": 3,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 1,
+          "card_not_present_30d": 5,
+          "atm_withdrawals_today": 1,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 45.00,
+          "typical_day_of_week": "TUESDAY",
+          "typical_time_of_day": "12:00-16:00",
+          "merchant_category_consistency": 0.72,
+          "spending_pattern_stability": 0.45,
+          "international_activity_normal": false,
+          "night_activity_normal": true,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": true
+        }
+      }
+    },
+    {
+      "name": "Small Business Cash Flow Crisis",
+      "description": "Business owner using personal card for business emergency - legitimate stress",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.45,
+      "why_subtle": "Unusual pattern, high amount, but matches small business emergency pattern",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A006",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T06:15:00.234Z",
+          "authorization_code": "AUTH678901",
+          "processing_network": "MASTERCARD"
+        },
+        "financial": {
+          "amount": 4250.00,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************2345",
+          "bin": "522981",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_subtype": "BUSINESS",
+          "card_present": false,
+          "entry_mode": "MANUAL",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 1823
+        },
+        "merchant": {
+          "merchant_id": "MID-34567",
+          "merchant_name": "Restaurant Supply Co",
+          "merchant_category_code": "5046",
+          "merchant_category": "Commercial Equipment",
+          "merchant_city": "Dallas",
+          "merchant_state": "TX",
+          "merchant_country": "US",
+          "merchant_postal_code": "75201",
+          "terminal_id": "WEB-RSC-001",
+          "merchant_age_days": 2920
+        },
+        "customer": {
+          "customer_id": "CUST-2016-8B2C",
+          "customer_since": "2016-06-18",
+          "age_of_account_days": 2772,
+          "customer_age": 45,
+          "customer_segment": "SMALL_BUSINESS",
+          "annual_income": 85000,
+          "credit_score": 698,
+          "email_domain": "joespizza.com",
+          "phone_carrier": "VERIZON",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2016-2B3C",
+          "device_type": "DESKTOP",
+          "device_os": "Windows",
+          "device_os_version": "11",
+          "browser": "Chrome",
+          "browser_version": "120.0",
+          "days_since_device_first_seen": 1456,
+          "device_trust_score": 0.88,
+          "screen_resolution": "1920x1080",
+          "timezone": "America/Chicago"
+        },
+        "location": {
+          "transaction_ip": "104.234.89.123",
+          "transaction_city": "Dallas",
+          "transaction_state": "TX",
+          "transaction_country": "US",
+          "transaction_postal_code": "75201",
+          "home_city": "Dallas",
+          "home_state": "TX",
+          "home_country": "US",
+          "distance_from_home_miles": 0.0,
+          "location_risk_score": 0.12
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "SMS",
+          "mfa_status": "SUCCESS",
+          "password_age_days": 234,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 456,
+          "session_id": "SESS-2024-8C9D",
+          "risk_based_auth_triggered": true
+        },
+        "velocity_counters": {
+          "transactions_today": 2,
+          "transactions_this_hour": 1,
+          "amount_today": 4587.23,
+          "unique_merchants_today": 2,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 8,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 234.50,
+          "typical_day_of_week": "MONDAY",
+          "typical_time_of_day": "08:00-10:00",
+          "merchant_category_consistency": 0.82,
+          "spending_pattern_stability": 0.67,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Card Testing Sophisticated",
+      "description": "Subtle card testing with donation pattern - should catch",
+      "expected_decision": "DECLINE",
+      "fraud_probability": 0.90,
+      "why_subtle": "Small amounts, charity merchant, but velocity pattern reveals testing",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A007",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T03:45:23.567Z",
+          "authorization_code": "AUTH789012",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 1.00,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************5678",
+          "bin": "554213",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_subtype": "STANDARD",
+          "card_present": false,
+          "entry_mode": "MANUAL",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 12
+        },
+        "merchant": {
+          "merchant_id": "MID-67890",
+          "merchant_name": "Global Relief Fund",
+          "merchant_category_code": "8398",
+          "merchant_category": "Charitable Organizations",
+          "merchant_city": "New York",
+          "merchant_state": "NY",
+          "merchant_country": "US",
+          "merchant_postal_code": "10001",
+          "terminal_id": "WEB-GRF-001",
+          "merchant_age_days": 34
+        },
+        "customer": {
+          "customer_id": "CUST-2024-3B8D",
+          "customer_since": "2024-01-19",
+          "age_of_account_days": 1,
+          "customer_age": 0,
+          "customer_segment": "NEW",
+          "annual_income": 0,
+          "credit_score": 0,
+          "email_domain": "tempmail.net",
+          "phone_carrier": "UNKNOWN",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2024-9A8B",
+          "device_type": "DESKTOP",
+          "device_os": "Linux",
+          "device_os_version": "Ubuntu",
+          "browser": "Chrome",
+          "browser_version": "120.0",
+          "days_since_device_first_seen": 0,
+          "device_trust_score": 0.12,
+          "screen_resolution": "1920x1080",
+          "timezone": "UTC"
+        },
+        "location": {
+          "transaction_ip": "45.142.234.89",
+          "transaction_city": "Unknown",
+          "transaction_state": "Unknown",
+          "transaction_country": "NL",
+          "transaction_postal_code": "Unknown",
+          "home_city": "Unknown",
+          "home_state": "Unknown",
+          "home_country": "Unknown",
+          "distance_from_home_miles": 9999,
+          "location_risk_score": 0.95
+        },
+        "authentication": {
+          "authentication_method": "NONE",
+          "authentication_status": "N/A",
+          "authentication_attempts": 0,
+          "mfa_type": "NOT_ENROLLED",
+          "mfa_status": "N/A",
+          "password_age_days": 0,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 23,
+          "session_id": "SESS-2024-1A2B",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 47,
+          "transactions_this_hour": 23,
+          "amount_today": 47.00,
+          "unique_merchants_today": 8,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 44,
+          "card_not_present_30d": 47,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 1.00,
+          "typical_day_of_week": "N/A",
+          "typical_time_of_day": "N/A",
+          "merchant_category_consistency": 0.0,
+          "spending_pattern_stability": 0.0,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": false,
+          "travel_pattern_consistent": false,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "New Immigrant First Purchase",
+      "description": "Recent immigrant making first US purchase - legitimate but no history",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.35,
+      "why_subtle": "No credit history, new account, but legitimate refugee/immigrant pattern",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A008",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T11:30:45.890Z",
+          "authorization_code": "AUTH890123",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 127.45,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************6789",
+          "bin": "486732",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_subtype": "STANDARD",
+          "card_present": true,
+          "entry_mode": "CHIP",
+          "pin_verified": true,
+          "contactless": false,
+          "card_age_days": 3
+        },
+        "merchant": {
+          "merchant_id": "MID-12345",
+          "merchant_name": "Walmart #3421",
+          "merchant_category_code": "5411",
+          "merchant_category": "Grocery Stores",
+          "merchant_city": "Minneapolis",
+          "merchant_state": "MN",
+          "merchant_country": "US",
+          "merchant_postal_code": "55401",
+          "terminal_id": "TERM-WM-3421",
+          "merchant_age_days": 4380
+        },
+        "customer": {
+          "customer_id": "CUST-2024-9C4A",
+          "customer_since": "2024-01-17",
+          "age_of_account_days": 3,
+          "customer_age": 32,
+          "customer_segment": "NEW",
+          "annual_income": 28000,
+          "credit_score": 0,
+          "email_domain": "gmail.com",
+          "phone_carrier": "MINT",
+          "address_changes_90d": 1
+        },
+        "device": {
+          "device_id": "DEV-2024-3C4D",
+          "device_type": "POS",
+          "device_os": "EMBEDDED",
+          "device_os_version": "3.1.2",
+          "browser": "N/A",
+          "browser_version": "N/A",
+          "days_since_device_first_seen": 0,
+          "device_trust_score": 0.94,
+          "screen_resolution": "N/A",
+          "timezone": "America/Chicago"
+        },
+        "location": {
+          "transaction_ip": "174.95.234.12",
+          "transaction_city": "Minneapolis",
+          "transaction_state": "MN",
+          "transaction_country": "US",
+          "transaction_postal_code": "55401",
+          "home_city": "Minneapolis",
+          "home_state": "MN",
+          "home_country": "US",
+          "distance_from_home_miles": 2.1,
+          "location_risk_score": 0.08
+        },
+        "authentication": {
+          "authentication_method": "CHIP_PIN",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 2,
+          "mfa_type": "NOT_ENROLLED",
+          "mfa_status": "N/A",
+          "password_age_days": 3,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 0,
+          "session_id": "N/A",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 1,
+          "transactions_this_hour": 1,
+          "amount_today": 127.45,
+          "unique_merchants_today": 1,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 0,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 1
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 0.00,
+          "typical_day_of_week": "N/A",
+          "typical_time_of_day": "N/A",
+          "merchant_category_consistency": 0.0,
+          "spending_pattern_stability": 0.0,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": false,
+          "travel_pattern_consistent": false,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Mule Account Layering",
+      "description": "Money mule moving funds - sophisticated laundering",
+      "expected_decision": "DECLINE",
+      "fraud_probability": 0.92,
+      "why_subtle": "Account looks normal, but rapid in/out pattern reveals mule activity",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A009",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T09:45:12.345Z",
+          "authorization_code": "AUTH901234",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 4875.00,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 25.00
+        },
+        "card": {
+          "masked_pan": "************1234",
+          "bin": "403628",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_subtype": "STANDARD",
+          "card_present": false,
+          "entry_mode": "SAVED",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 234
+        },
+        "merchant": {
+          "merchant_id": "MID-00001",
+          "merchant_name": "Wire Transfer Service",
+          "merchant_category_code": "6536",
+          "merchant_category": "Money Transfer",
+          "merchant_city": "New York",
+          "merchant_state": "NY",
+          "merchant_country": "US",
+          "merchant_postal_code": "10001",
+          "terminal_id": "WIRE-NYC-01",
+          "merchant_age_days": 3650
+        },
+        "customer": {
+          "customer_id": "CUST-2023-4E8A",
+          "customer_since": "2023-09-10",
+          "age_of_account_days": 132,
+          "customer_age": 24,
+          "customer_segment": "STANDARD",
+          "annual_income": 32000,
+          "credit_score": 612,
+          "email_domain": "outlook.com",
+          "phone_carrier": "CRICKET",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2023-5E6F",
+          "device_type": "MOBILE",
+          "device_os": "Android",
+          "device_os_version": "12",
+          "browser": "Chrome",
+          "browser_version": "119.0",
+          "days_since_device_first_seen": 45,
+          "device_trust_score": 0.34,
+          "screen_resolution": "720x1600",
+          "timezone": "America/New_York"
+        },
+        "location": {
+          "transaction_ip": "68.194.123.45",
+          "transaction_city": "Bronx",
+          "transaction_state": "NY",
+          "transaction_country": "US",
+          "transaction_postal_code": "10451",
+          "home_city": "Bronx",
+          "home_state": "NY",
+          "home_country": "US",
+          "distance_from_home_miles": 0.0,
+          "location_risk_score": 0.42
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "SMS",
+          "mfa_status": "SUCCESS",
+          "password_age_days": 12,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 89,
+          "session_id": "SESS-2024-2C3D",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 4,
+          "transactions_this_hour": 2,
+          "amount_today": 9750.00,
+          "unique_merchants_today": 2,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 12,
+          "atm_withdrawals_today": 1,
+          "password_changes_30d": 1,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 125.00,
+          "typical_day_of_week": "VARIES",
+          "typical_time_of_day": "VARIES",
+          "merchant_category_consistency": 0.23,
+          "spending_pattern_stability": 0.18,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Tax Professional Quarterly Payment",
+      "description": "CPA making large quarterly tax payment for client - legitimate but unusual",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.20,
+      "why_subtle": "Large government payment, professional context, legitimate pattern",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A010",
+          "transaction_type": "PAYMENT",
+          "transaction_datetime": "2024-01-20T16:55:00.678Z",
+          "authorization_code": "AUTH012345",
+          "processing_network": "MASTERCARD"
+        },
+        "financial": {
+          "amount": 23456.78,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************4567",
+          "bin": "517805",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_subtype": "BUSINESS",
+          "card_present": false,
+          "entry_mode": "MANUAL",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 2345
+        },
+        "merchant": {
+          "merchant_id": "MID-99999",
+          "merchant_name": "US Treasury Direct",
+          "merchant_category_code": "9311",
+          "merchant_category": "Tax Payments",
+          "merchant_city": "Washington",
+          "merchant_state": "DC",
+          "merchant_country": "US",
+          "merchant_postal_code": "20001",
+          "terminal_id": "GOV-TAX-001",
+          "merchant_age_days": 9999
+        },
+        "customer": {
+          "customer_id": "CUST-2012-6A9C",
+          "customer_since": "2012-04-15",
+          "age_of_account_days": 4287,
+          "customer_age": 52,
+          "customer_segment": "BUSINESS",
+          "annual_income": 145000,
+          "credit_score": 792,
+          "email_domain": "cpafirim.com",
+          "phone_carrier": "VERIZON",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2012-7G8H",
+          "device_type": "DESKTOP",
+          "device_os": "Windows",
+          "device_os_version": "11",
+          "browser": "Edge",
+          "browser_version": "120.0",
+          "days_since_device_first_seen": 2890,
+          "device_trust_score": 0.96,
+          "screen_resolution": "2560x1440",
+          "timezone": "America/Chicago"
+        },
+        "location": {
+          "transaction_ip": "65.234.89.12",
+          "transaction_city": "Chicago",
+          "transaction_state": "IL",
+          "transaction_country": "US",
+          "transaction_postal_code": "60601",
+          "home_city": "Chicago",
+          "home_state": "IL",
+          "home_country": "US",
+          "distance_from_home_miles": 0.0,
+          "location_risk_score": 0.05
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "AUTHENTICATOR",
+          "mfa_status": "SUCCESS",
+          "password_age_days": 34,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 678,
+          "session_id": "SESS-2024-4E5F",
+          "risk_based_auth_triggered": true
+        },
+        "velocity_counters": {
+          "transactions_today": 12,
+          "transactions_this_hour": 3,
+          "amount_today": 45678.90,
+          "unique_merchants_today": 4,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 23,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 2345.00,
+          "typical_day_of_week": "WEEKDAY",
+          "typical_time_of_day": "09:00-17:00",
+          "merchant_category_consistency": 0.78,
+          "spending_pattern_stability": 0.72,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": false,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Synthetic Identity Establishing Pattern",
+      "description": "Early stage synthetic identity building history - should catch",
+      "expected_decision": "DECLINE",
+      "fraud_probability": 0.80,
+      "why_subtle": "Perfect payment history but artificial pattern, thin file red flags",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A011",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T12:00:00.000Z",
+          "authorization_code": "AUTH123456",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 89.99,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************8912",
+          "bin": "414709",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_subtype": "SECURED",
+          "card_present": false,
+          "entry_mode": "SAVED",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 185
+        },
+        "merchant": {
+          "merchant_id": "MID-56789",
+          "merchant_name": "Netflix",
+          "merchant_category_code": "5735",
+          "merchant_category": "Record Stores",
+          "merchant_city": "Los Gatos",
+          "merchant_state": "CA",
+          "merchant_country": "US",
+          "merchant_postal_code": "95032",
+          "terminal_id": "WEB-NFLX-001",
+          "merchant_age_days": 5475
+        },
+        "customer": {
+          "customer_id": "CUST-2023-8A7C",
+          "customer_since": "2023-07-20",
+          "age_of_account_days": 184,
+          "customer_age": 0,
+          "customer_segment": "NEW",
+          "annual_income": 45000,
+          "credit_score": 645,
+          "email_domain": "protonmail.com",
+          "phone_carrier": "UNKNOWN",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2023-8H9I",
+          "device_type": "DESKTOP",
+          "device_os": "Windows",
+          "device_os_version": "10",
+          "browser": "Chrome",
+          "browser_version": "120.0",
+          "days_since_device_first_seen": 184,
+          "device_trust_score": 0.45,
+          "screen_resolution": "1366x768",
+          "timezone": "America/New_York"
+        },
+        "location": {
+          "transaction_ip": "71.198.234.56",
+          "transaction_city": "Newark",
+          "transaction_state": "NJ",
+          "transaction_country": "US",
+          "transaction_postal_code": "07102",
+          "home_city": "Newark",
+          "home_state": "NJ",
+          "home_country": "US",
+          "distance_from_home_miles": 0.0,
+          "location_risk_score": 0.35
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "NOT_ENROLLED",
+          "mfa_status": "N/A",
+          "password_age_days": 184,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 234,
+          "session_id": "SESS-2024-6G7H",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 3,
+          "transactions_this_hour": 1,
+          "amount_today": 234.56,
+          "unique_merchants_today": 3,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 18,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 75.00,
+          "typical_day_of_week": "15TH_OF_MONTH",
+          "typical_time_of_day": "12:00",
+          "merchant_category_consistency": 0.95,
+          "spending_pattern_stability": 0.99,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": false,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Medication Emergency Purchase",
+      "description": "Emergency medication purchase while traveling - legitimate urgent need",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.15,
+      "why_subtle": "Unusual location, high amount for pharmacy, but emergency pattern",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A012",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T23:45:34.901Z",
+          "authorization_code": "AUTH234567",
+          "processing_network": "MASTERCARD"
+        },
+        "financial": {
+          "amount": 847.32,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************4521",
+          "bin": "489234",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_subtype": "REWARDS",
+          "card_present": true,
+          "entry_mode": "CHIP",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 1234
+        },
+        "merchant": {
+          "merchant_id": "MID-23478",
+          "merchant_name": "CVS Pharmacy #8934",
+          "merchant_category_code": "5912",
+          "merchant_category": "Drug Stores",
+          "merchant_city": "Phoenix",
+          "merchant_state": "AZ",
+          "merchant_country": "US",
+          "merchant_postal_code": "85001",
+          "terminal_id": "TERM-CVS-8934",
+          "merchant_age_days": 3285
+        },
+        "customer": {
+          "customer_id": "CUST-2017-9C4A",
+          "customer_since": "2017-03-18",
+          "age_of_account_days": 2499,
+          "customer_age": 67,
+          "customer_segment": "PREMIUM",
+          "annual_income": 95000,
+          "credit_score": 762,
+          "email_domain": "gmail.com",
+          "phone_carrier": "AT&T",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2024-9I0J",
+          "device_type": "POS",
+          "device_os": "EMBEDDED",
+          "device_os_version": "4.1.2",
+          "browser": "N/A",
+          "browser_version": "N/A",
+          "days_since_device_first_seen": 0,
+          "device_trust_score": 0.91,
+          "screen_resolution": "N/A",
+          "timezone": "America/Phoenix"
+        },
+        "location": {
+          "transaction_ip": "68.234.178.90",
+          "transaction_city": "Phoenix",
+          "transaction_state": "AZ",
+          "transaction_country": "US",
+          "transaction_postal_code": "85001",
+          "home_city": "Seattle",
+          "home_state": "WA",
+          "home_country": "US",
+          "distance_from_home_miles": 1114,
+          "location_risk_score": 0.25
+        },
+        "authentication": {
+          "authentication_method": "CHIP_PIN",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "NOT_REQUIRED",
+          "mfa_status": "N/A",
+          "password_age_days": 123,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 0,
+          "session_id": "N/A",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 4,
+          "transactions_this_hour": 1,
+          "amount_today": 1234.56,
+          "unique_merchants_today": 4,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 6,
+          "atm_withdrawals_today": 1,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 123.45,
+          "typical_day_of_week": "VARIES",
+          "typical_time_of_day": "09:00-18:00",
+          "merchant_category_consistency": 0.67,
+          "spending_pattern_stability": 0.74,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Subscription Stacking Fraud",
+      "description": "Creating multiple family accounts for resale - sophisticated fraud",
+      "expected_decision": "DECLINE",
+      "fraud_probability": 0.88,
+      "why_subtle": "Uses different cards, appears legitimate, but pattern reveals abuse",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A013",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T08:30:00.123Z",
+          "authorization_code": "AUTH345678",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 34.99,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 0.00
+        },
+        "card": {
+          "masked_pan": "************6734",
+          "bin": "445821",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_subtype": "PREPAID",
+          "card_present": false,
+          "entry_mode": "SAVED",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 12
+        },
+        "merchant": {
+          "merchant_id": "MID-87654",
+          "merchant_name": "Spotify Family",
+          "merchant_category_code": "5735",
+          "merchant_category": "Record Stores",
+          "merchant_city": "New York",
+          "merchant_state": "NY",
+          "merchant_country": "US",
+          "merchant_postal_code": "10001",
+          "terminal_id": "WEB-SPOT-001",
+          "merchant_age_days": 4015
+        },
+        "customer": {
+          "customer_id": "CUST-2023-7A8B",
+          "customer_since": "2023-11-30",
+          "age_of_account_days": 51,
+          "customer_age": 26,
+          "customer_segment": "STANDARD",
+          "annual_income": 35000,
+          "credit_score": 598,
+          "email_domain": "outlook.com",
+          "phone_carrier": "METRO",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2023-0J1K",
+          "device_type": "MOBILE",
+          "device_os": "Android",
+          "device_os_version": "13",
+          "browser": "Chrome",
+          "browser_version": "120.0",
+          "days_since_device_first_seen": 51,
+          "device_trust_score": 0.28,
+          "screen_resolution": "720x1600",
+          "timezone": "America/New_York"
+        },
+        "location": {
+          "transaction_ip": "74.125.234.67",
+          "transaction_city": "Brooklyn",
+          "transaction_state": "NY",
+          "transaction_country": "US",
+          "transaction_postal_code": "11201",
+          "home_city": "Brooklyn",
+          "home_state": "NY",
+          "home_country": "US",
+          "distance_from_home_miles": 0.0,
+          "location_risk_score": 0.32
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "NOT_ENROLLED",
+          "mfa_status": "N/A",
+          "password_age_days": 51,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 145,
+          "session_id": "SESS-2024-8I9J",
+          "risk_based_auth_triggered": false
+        },
+        "velocity_counters": {
+          "transactions_today": 8,
+          "transactions_this_hour": 4,
+          "amount_today": 279.92,
+          "unique_merchants_today": 1,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 3,
+          "card_not_present_30d": 34,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 34.99,
+          "typical_day_of_week": "VARIES",
+          "typical_time_of_day": "VARIES",
+          "merchant_category_consistency": 0.89,
+          "spending_pattern_stability": 0.34,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Divorce Asset Split Payment",
+      "description": "Court-ordered asset transfer during divorce - legitimate but unusual",
+      "expected_decision": "APPROVE",
+      "fraud_probability": 0.30,
+      "why_subtle": "Large transfer, emotional context, but legally mandated",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A014",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T14:00:00.456Z",
+          "authorization_code": "AUTH456789",
+          "processing_network": "MASTERCARD"
+        },
+        "financial": {
+          "amount": 87500.00,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 35.00
+        },
+        "card": {
+          "masked_pan": "************2341",
+          "bin": "517823",
+          "card_brand": "MASTERCARD",
+          "card_type": "DEBIT",
+          "card_subtype": "STANDARD",
+          "card_present": false,
+          "entry_mode": "MANUAL",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 3456
+        },
+        "merchant": {
+          "merchant_id": "MID-00002",
+          "merchant_name": "Bank Transfer Service",
+          "merchant_category_code": "6012",
+          "merchant_category": "Financial Institutions",
+          "merchant_city": "San Francisco",
+          "merchant_state": "CA",
+          "merchant_country": "US",
+          "merchant_postal_code": "94102",
+          "terminal_id": "BANK-WIRE-01",
+          "merchant_age_days": 5475
+        },
+        "customer": {
+          "customer_id": "CUST-2010-3B9D",
+          "customer_since": "2010-01-15",
+          "age_of_account_days": 5117,
+          "customer_age": 48,
+          "customer_segment": "PREMIUM",
+          "annual_income": 125000,
+          "credit_score": 698,
+          "email_domain": "yahoo.com",
+          "phone_carrier": "VERIZON",
+          "address_changes_90d": 1
+        },
+        "device": {
+          "device_id": "DEV-2010-1K2L",
+          "device_type": "DESKTOP",
+          "device_os": "MacOS",
+          "device_os_version": "14.2",
+          "browser": "Safari",
+          "browser_version": "17.2",
+          "days_since_device_first_seen": 1892,
+          "device_trust_score": 0.87,
+          "screen_resolution": "1920x1080",
+          "timezone": "America/Los_Angeles"
+        },
+        "location": {
+          "transaction_ip": "73.189.234.12",
+          "transaction_city": "San Francisco",
+          "transaction_state": "CA",
+          "transaction_country": "US",
+          "transaction_postal_code": "94102",
+          "home_city": "San Francisco",
+          "home_state": "CA",
+          "home_country": "US",
+          "distance_from_home_miles": 0.0,
+          "location_risk_score": 0.08
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 2,
+          "mfa_type": "AUTHENTICATOR",
+          "mfa_status": "SUCCESS",
+          "password_age_days": 8,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 1234,
+          "session_id": "SESS-2024-0K1L",
+          "risk_based_auth_triggered": true
+        },
+        "velocity_counters": {
+          "transactions_today": 1,
+          "transactions_this_hour": 1,
+          "amount_today": 87500.00,
+          "unique_merchants_today": 1,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 3,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 1,
+          "failed_auth_attempts_24h": 1
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 234.56,
+          "typical_day_of_week": "WEEKDAY",
+          "typical_time_of_day": "09:00-17:00",
+          "merchant_category_consistency": 0.65,
+          "spending_pattern_stability": 0.45,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": false,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    },
+    {
+      "name": "Romance Scam Victim Transfer",
+      "description": "Victim sending money to romance scammer - authorized but fraudulent",
+      "expected_decision": "DECLINE",
+      "fraud_probability": 0.95,
+      "why_subtle": "Customer authorizing but clear scam pattern, emotional manipulation",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-2024-0120-A015",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T19:30:45.789Z",
+          "authorization_code": "AUTH567890",
+          "processing_network": "VISA"
+        },
+        "financial": {
+          "amount": 3500.00,
+          "currency": "USD",
+          "exchange_rate": 1.00,
+          "original_currency": "USD",
+          "fees": 45.00
+        },
+        "card": {
+          "masked_pan": "************9234",
+          "bin": "486732",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_subtype": "STANDARD",
+          "card_present": false,
+          "entry_mode": "MANUAL",
+          "pin_verified": false,
+          "contactless": false,
+          "card_age_days": 2678
+        },
+        "merchant": {
+          "merchant_id": "MID-00003",
+          "merchant_name": "Western Union",
+          "merchant_category_code": "6536",
+          "merchant_category": "Money Transfer",
+          "merchant_city": "Denver",
+          "merchant_state": "CO",
+          "merchant_country": "US",
+          "merchant_postal_code": "80202",
+          "terminal_id": "WU-ONLINE-01",
+          "merchant_age_days": 7300
+        },
+        "customer": {
+          "customer_id": "CUST-2015-5C8A",
+          "customer_since": "2015-11-30",
+          "age_of_account_days": 2973,
+          "customer_age": 68,
+          "customer_segment": "SENIOR",
+          "annual_income": 52000,
+          "credit_score": 712,
+          "email_domain": "aol.com",
+          "phone_carrier": "AT&T",
+          "address_changes_90d": 0
+        },
+        "device": {
+          "device_id": "DEV-2015-2L3M",
+          "device_type": "DESKTOP",
+          "device_os": "Windows",
+          "device_os_version": "10",
+          "browser": "Edge",
+          "browser_version": "120.0",
+          "days_since_device_first_seen": 1234,
+          "device_trust_score": 0.76,
+          "screen_resolution": "1366x768",
+          "timezone": "America/Chicago"
+        },
+        "location": {
+          "transaction_ip": "98.167.234.89",
+          "transaction_city": "Milwaukee",
+          "transaction_state": "WI",
+          "transaction_country": "US",
+          "transaction_postal_code": "53201",
+          "home_city": "Milwaukee",
+          "home_state": "WI",
+          "home_country": "US",
+          "distance_from_home_miles": 0.0,
+          "location_risk_score": 0.15
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_status": "SUCCESS",
+          "authentication_attempts": 1,
+          "mfa_type": "SMS",
+          "mfa_status": "SUCCESS",
+          "password_age_days": 234,
+          "biometric_match_score": 0.0,
+          "session_duration_seconds": 892,
+          "session_id": "SESS-2024-2M3N",
+          "risk_based_auth_triggered": true
+        },
+        "velocity_counters": {
+          "transactions_today": 2,
+          "transactions_this_hour": 1,
+          "amount_today": 3545.00,
+          "unique_merchants_today": 2,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0,
+          "card_not_present_30d": 8,
+          "atm_withdrawals_today": 0,
+          "password_changes_30d": 0,
+          "failed_auth_attempts_24h": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 67.89,
+          "typical_day_of_week": "VARIES",
+          "typical_time_of_day": "VARIES",
+          "merchant_category_consistency": 0.78,
+          "spending_pattern_stability": 0.82,
+          "international_activity_normal": false,
+          "night_activity_normal": false,
+          "weekend_activity_normal": true,
+          "travel_pattern_consistent": true,
+          "device_switching_normal": false
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "purpose": "Test system ability to distinguish subtle fraud from legitimate edge cases",
+    "data_structure": "Fully standardized across all cases",
+    "expected_accuracy": "Human-level reasoning required",
+    "decision_distribution": {
+      "APPROVE": 7,
+      "DECLINE": 8,
+      "total": 15
+    },
+    "categories": [
+      "legitimate_unusual",
+      "sophisticated_fraud",
+      "edge_case_legitimate",
+      "subtle_fraud_patterns"
+    ]
+  }
+}

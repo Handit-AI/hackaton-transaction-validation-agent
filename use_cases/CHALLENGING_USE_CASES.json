@@ -1,0 +1,1132 @@
+{
+  "use_cases": [
+    {
+      "name": "Lottery Winner First Splurge",
+      "description": "Legitimate lottery winner making first large purchase - looks like account takeover",
+      "expected_difficulty": "VERY_HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "DECLINE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-LOTTO-8A9F2C",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T23:45:12.567Z"
+        },
+        "financial": {
+          "amount": 47850.00,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************3498",
+          "bin": "424631",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-LUXURY-AUTO",
+          "merchant_name": "Tesla Motors",
+          "merchant_category_code": "5571",
+          "merchant_category": "Automobile Dealers"
+        },
+        "customer": {
+          "customer_id": "CUST-2008-9C3F71",
+          "customer_since": "2008-03-15",
+          "age_of_account_days": 5789,
+          "occupation": "Warehouse Worker",
+          "annual_income": 42000,
+          "sudden_deposit_yesterday": 2800000
+        },
+        "device": {
+          "device_id": "DEV-MOBILE-NEW-4A7C",
+          "device_type": "MOBILE",
+          "device_os": "Android",
+          "days_since_device_first_seen": 0,
+          "multiple_failed_logins": 3
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "password_reset_today": true,
+          "security_questions_attempted": 4
+        },
+        "location": {
+          "ip_address": "73.94.123.67",
+          "distance_from_home_miles": 0,
+          "unusual_access_time": true
+        },
+        "velocity_counters": {
+          "largest_transaction_ever": 47850.00,
+          "previous_largest": 487.00,
+          "luxury_purchases_lifetime": 0
+        },
+        "behavioral_profile": {
+          "typical_transaction_amount": 45.00,
+          "luxury_merchant_history": "NEVER",
+          "late_night_activity": "RARE",
+          "account_balance_yesterday": 1247.00,
+          "account_balance_today": 2801247.00
+        }
+      }
+    },
+    {
+      "name": "Sophisticated Synthetic Identity Bust-Out",
+      "description": "Perfect synthetic identity executing final bust-out - looks completely legitimate",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "DECLINE",
+      "likely_system_decision": "APPROVE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-SYNT-PERFECT-2B8D",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T14:30:22.123Z"
+        },
+        "financial": {
+          "amount": 4250.00,
+          "currency": "USD",
+          "credit_limit": 15000.00,
+          "current_balance": 4250.00
+        },
+        "card": {
+          "masked_pan": "************9023",
+          "bin": "548210",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_present": true,
+          "entry_mode": "CHIP"
+        },
+        "merchant": {
+          "merchant_id": "MID-BESTBUY-4782",
+          "merchant_name": "Best Buy #4782",
+          "merchant_category_code": "5732",
+          "merchant_category": "Electronics Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2021-SYNT-8F",
+          "customer_since": "2021-01-15",
+          "age_of_account_days": 1100,
+          "credit_score": 742,
+          "payment_history": "PERFECT",
+          "number_of_credit_products": 4,
+          "total_credit_limit": 45000
+        },
+        "device": {
+          "device_id": "DEV-TRUSTED-LONG-9B3C",
+          "device_type": "MOBILE",
+          "days_since_device_first_seen": 1100,
+          "device_trust_score": 0.95
+        },
+        "authentication": {
+          "authentication_method": "BIOMETRIC",
+          "authentication_status": "SUCCESS"
+        },
+        "velocity_counters": {
+          "payments_made_on_time": 36,
+          "missed_payments": 0,
+          "credit_limit_increases": 3,
+          "gradual_spending_increase": true,
+          "purchases_this_week": 12,
+          "total_this_week": 14750.00
+        },
+        "behavioral_profile": {
+          "payment_behavior": "EXCELLENT",
+          "utilization_pattern": "GRADUALLY_INCREASING",
+          "merchant_diversity": "HIGH",
+          "geographical_consistency": true,
+          "authorized_user_added_recently": true,
+          "simultaneous_purchases_other_cards": true
+        }
+      }
+    },
+    {
+      "name": "Elderly Parent Assisted Transaction",
+      "description": "Adult child helping elderly parent with online purchase - multiple authentication failures",
+      "expected_difficulty": "HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "REVIEW",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-ELDERLY-ASSIST-7C9A",
+          "transaction_type": "ECOMMERCE",
+          "transaction_datetime": "2024-01-20T16:22:45.789Z"
+        },
+        "financial": {
+          "amount": 1847.00,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************6734",
+          "bin": "476173",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-MEDICAL-SUPPLY",
+          "merchant_name": "MedicalSupplyDepot.com",
+          "merchant_category_code": "5047",
+          "merchant_category": "Medical Equipment and Supplies"
+        },
+        "customer": {
+          "customer_id": "CUST-1998-ELDERLY-3D",
+          "customer_since": "1998-07-22",
+          "age_of_account_days": 9281,
+          "customer_age": 81,
+          "typical_channel": "IN_PERSON"
+        },
+        "device": {
+          "device_id": "DEV-DIFFERENT-LOC-8A2F",
+          "device_type": "DESKTOP",
+          "days_since_device_first_seen": 0,
+          "browser": "Chrome",
+          "user_agent_indicates": "Windows 11"
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "authentication_attempts": 5,
+          "wrong_password_attempts": 4,
+          "security_questions_failed": 2,
+          "called_customer_service": true,
+          "service_note": "Daughter helping with purchase"
+        },
+        "location": {
+          "ip_city": "Seattle",
+          "ip_state": "WA",
+          "account_holder_city": "Phoenix",
+          "account_holder_state": "AZ",
+          "distance_from_home_miles": 1424
+        },
+        "session": {
+          "session_duration_seconds": 2847,
+          "cart_modifications": 8,
+          "help_page_visited": true,
+          "customer_service_chat": true,
+          "typing_pattern": "DIFFERENT"
+        },
+        "velocity_counters": {
+          "online_purchases_lifetime": 3,
+          "last_online_purchase_days_ago": 487
+        },
+        "behavioral_profile": {
+          "typical_transaction_channel": "CARD_PRESENT",
+          "online_comfort_level": "VERY_LOW",
+          "requires_assistance": "OFTEN",
+          "authorized_contacts": ["Daughter - Seattle"]
+        }
+      }
+    },
+    {
+      "name": "Insider Fraud Family Member",
+      "description": "Family member using card with permission history - this time without permission",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "DECLINE",
+      "likely_system_decision": "APPROVE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-INSIDER-FAM-9B8C",
+          "transaction_type": "ATM_WITHDRAWAL",
+          "transaction_datetime": "2024-01-20T02:15:33.234Z"
+        },
+        "financial": {
+          "amount": 800.00,
+          "currency": "USD",
+          "daily_limit": 1000.00
+        },
+        "card": {
+          "masked_pan": "************4892",
+          "bin": "421783",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": true,
+          "pin_verified": true
+        },
+        "merchant": {
+          "merchant_id": "ATM-CHASE-8934",
+          "merchant_name": "Chase ATM #8934",
+          "merchant_category_code": "6011",
+          "merchant_category": "ATM"
+        },
+        "customer": {
+          "customer_id": "CUST-2012-4A7F93",
+          "customer_since": "2012-11-30",
+          "age_of_account_days": 4072,
+          "recent_dispute": false
+        },
+        "device": {
+          "atm_id": "ATM-8934",
+          "atm_location": "Same neighborhood",
+          "frequently_used_atm": true
+        },
+        "authentication": {
+          "authentication_method": "PIN",
+          "authentication_status": "SUCCESS",
+          "correct_pin_first_attempt": true
+        },
+        "location": {
+          "atm_city": "Account holder city",
+          "distance_from_home_miles": 2.3
+        },
+        "velocity_counters": {
+          "atm_withdrawals_today": 3,
+          "amount_withdrawn_today": 2400.00,
+          "unusual_pattern": "MULTIPLE_MAX_WITHDRAWALS"
+        },
+        "behavioral_profile": {
+          "shared_card_history": true,
+          "authorized_user_withdrawals": "FREQUENT",
+          "family_member_transactions": "COMMON",
+          "typical_atm_amount": 200.00,
+          "overnight_atm_usage": "RARE",
+          "pattern_matches_teenage_child": true
+        }
+      }
+    },
+    {
+      "name": "ML Adversarial Boundary Attack",
+      "description": "Transaction crafted to sit exactly at decision boundaries - designed to confuse ML models",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "REVIEW",
+      "likely_system_decision": "APPROVE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-ADVERSARIAL-BOUNDARY",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T12:00:00.000Z"
+        },
+        "financial": {
+          "amount": 2499.99,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************5555",
+          "bin": "444444",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": true,
+          "entry_mode": "CHIP"
+        },
+        "merchant": {
+          "merchant_id": "MID-BOUNDARY-TEST",
+          "merchant_name": "Electronics Plus",
+          "merchant_category_code": "5732",
+          "merchant_category": "Electronics"
+        },
+        "customer": {
+          "customer_id": "CUST-2018-BOUNDARY",
+          "customer_since": "2018-06-15",
+          "age_of_account_days": 2045,
+          "days_since_last_transaction": 14,
+          "credit_utilization": 0.3999
+        },
+        "device": {
+          "device_id": "DEV-KNOWN-TRUST-5050",
+          "days_since_device_first_seen": 89,
+          "device_trust_score": 0.6999
+        },
+        "authentication": {
+          "authentication_method": "3DS2",
+          "risk_score": 0.4999,
+          "challenge_required": false
+        },
+        "location": {
+          "distance_from_home_miles": 49.99,
+          "distance_from_last_transaction": 99.99
+        },
+        "velocity_counters": {
+          "transactions_today": 2,
+          "amount_today": 2999.98,
+          "transactions_this_hour": 1,
+          "unique_merchants_today": 2,
+          "international_transactions_30d": 0,
+          "declined_transactions_7d": 0
+        },
+        "behavioral_profile": {
+          "avg_transaction_amount": 499.99,
+          "transaction_amount_percentile": 69.99,
+          "days_since_similar_merchant": 29,
+          "profile_age_score": 0.5999,
+          "consistency_score": 0.7499
+        }
+      }
+    },
+    {
+      "name": "Emergency Natural Disaster Evacuation",
+      "description": "Legitimate emergency purchases during hurricane evacuation - extreme velocity",
+      "expected_difficulty": "VERY_HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "DECLINE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-HURRICANE-EVAC-3A9C",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T03:27:19.456Z"
+        },
+        "financial": {
+          "amount": 2340.00,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************7823",
+          "bin": "524901",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_present": true,
+          "entry_mode": "SWIPE"
+        },
+        "merchant": {
+          "merchant_id": "MID-HOTEL-EMRG",
+          "merchant_name": "Holiday Inn Express",
+          "merchant_category_code": "7011",
+          "merchant_category": "Hotels and Motels",
+          "merchant_state": "GA",
+          "surge_pricing_active": true
+        },
+        "customer": {
+          "customer_id": "CUST-2015-EVAC-8D2C",
+          "customer_since": "2015-09-08",
+          "age_of_account_days": 3056,
+          "home_state": "FL",
+          "emergency_alert_zone": true
+        },
+        "location": {
+          "transaction_state": "GA",
+          "distance_from_home_miles": 347,
+          "evacuation_route": true,
+          "emergency_zone_origin": true
+        },
+        "velocity_counters": {
+          "transactions_last_3_hours": 8,
+          "unique_merchants_3h": 8,
+          "gas_station_transactions_3h": 3,
+          "total_amount_3h": 3890.00,
+          "states_visited_today": 3
+        },
+        "behavioral_profile": {
+          "crisis_purchase_patterns": true,
+          "gas_food_lodging_spike": true,
+          "typical_monthly_hotel_spend": 0,
+          "interstate_corridor_transactions": true,
+          "northbound_progression": true
+        },
+        "external_context": {
+          "weather_emergency": "HURRICANE_WARNING",
+          "evacuation_order": "MANDATORY",
+          "fema_disaster_zone": true
+        }
+      }
+    },
+    {
+      "name": "Authorized Push Payment Scam",
+      "description": "Victim willingly sending money to scammer - technically authorized but fraudulent",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "DECLINE",
+      "likely_system_decision": "APPROVE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-APP-SCAM-6D8F",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T10:45:33.678Z"
+        },
+        "financial": {
+          "amount": 3500.00,
+          "currency": "USD",
+          "transfer_type": "EXTERNAL",
+          "destination_account": "****4921",
+          "destination_bank": "DIGITAL_BANK"
+        },
+        "card": {
+          "masked_pan": "************9234",
+          "bin": "489302",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "P2P-ZELLE",
+          "merchant_name": "Zelle Transfer",
+          "merchant_category_code": "6536",
+          "merchant_category": "Money Transfer"
+        },
+        "customer": {
+          "customer_id": "CUST-2010-SENIOR-4B",
+          "customer_since": "2010-04-20",
+          "age_of_account_days": 5023,
+          "customer_age": 68,
+          "previous_scam_attempts": 0
+        },
+        "device": {
+          "device_id": "DEV-HOME-PC-TRUST",
+          "device_type": "DESKTOP",
+          "days_since_device_first_seen": 1823,
+          "active_phone_call": true,
+          "remote_access_software": "DETECTED"
+        },
+        "authentication": {
+          "authentication_method": "MFA",
+          "authentication_status": "SUCCESS",
+          "customer_initiated": true,
+          "verbal_authorization": true
+        },
+        "session": {
+          "session_duration_seconds": 4234,
+          "hesitation_patterns": true,
+          "multiple_amount_changes": 3,
+          "support_chat_opened": true,
+          "typed_notes": "IRS payment urgent"
+        },
+        "velocity_counters": {
+          "first_transfer_to_recipient": true,
+          "transfers_to_new_recipients_30d": 0,
+          "largest_transfer_ever": false
+        },
+        "behavioral_profile": {
+          "typical_transfer_amount": 150.00,
+          "transfer_frequency": "MONTHLY",
+          "new_payee_pattern": "NEVER",
+          "government_payment_history": "CHECK_ONLY",
+          "urgency_keywords_detected": true
+        },
+        "communication_metadata": {
+          "inbound_call_duration": 1847,
+          "caller_id_spoofed": true,
+          "pressure_language_detected": true,
+          "government_impersonation": true
+        }
+      }
+    },
+    {
+      "name": "Business Travel Expense Anomaly",
+      "description": "Legitimate business traveler with completely erratic pattern due to client emergency",
+      "expected_difficulty": "HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "DECLINE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-BIZTRAVEL-CHAOS-8C4A",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T18:30:45.234Z"
+        },
+        "financial": {
+          "amount": 8923.00,
+          "currency": "JPY",
+          "amount_usd": 59.82,
+          "exchange_rate": 149.23
+        },
+        "card": {
+          "masked_pan": "************8012",
+          "bin": "403628",
+          "card_brand": "VISA",
+          "card_type": "BUSINESS",
+          "card_present": false,
+          "corporate_card": true
+        },
+        "merchant": {
+          "merchant_id": "MID-URGENT-FLIGHT",
+          "merchant_name": "Japan Airlines",
+          "merchant_category_code": "4511",
+          "merchant_category": "Airlines",
+          "booking_class": "LAST_MINUTE"
+        },
+        "customer": {
+          "customer_id": "CORP-EMP-2019-CONSULT",
+          "employee_id": "EMP-78234",
+          "customer_since": "2019-02-14",
+          "age_of_account_days": 1801,
+          "job_title": "Senior Consultant"
+        },
+        "location": {
+          "booking_origin": "Tokyo, JP",
+          "flight_destination": "Sydney, AU",
+          "current_location": "Tokyo, JP",
+          "home_location": "New York, NY",
+          "locations_in_48h": ["NYC", "London", "Dubai", "Tokyo"]
+        },
+        "velocity_counters": {
+          "countries_visited_48h": 4,
+          "airline_bookings_24h": 3,
+          "total_travel_spend_48h": 12450.00,
+          "timezone_changes": 4,
+          "consecutive_flight_bookings": true
+        },
+        "behavioral_profile": {
+          "typical_travel_pattern": "PLANNED",
+          "advance_booking_days": 14,
+          "last_minute_bookings": "RARE",
+          "expense_preapproval": "MISSING",
+          "client_emergency": true
+        },
+        "corporate_context": {
+          "expense_policy_violation": true,
+          "manager_unreachable": true,
+          "client_critical_issue": true,
+          "board_meeting_tomorrow": true,
+          "expense_justification": "Client system down - flying to Sydney DC"
+        }
+      }
+    },
+    {
+      "name": "Cryptocurrency Arbitrage Pattern",
+      "description": "Legitimate crypto trader with patterns identical to money laundering",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "DECLINE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-CRYPTO-ARB-9F3C",
+          "transaction_type": "DEPOSIT",
+          "transaction_datetime": "2024-01-20T04:17:28.901Z"
+        },
+        "financial": {
+          "amount": 49999.00,
+          "currency": "USD",
+          "source_type": "CRYPTO_EXCHANGE",
+          "source_exchange": "Binance"
+        },
+        "card": {
+          "masked_pan": "************6789",
+          "bin": "476173",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "customer": {
+          "customer_id": "CUST-2020-TRADER-5A",
+          "customer_since": "2020-08-30",
+          "age_of_account_days": 1239,
+          "occupation": "Day Trader",
+          "income_source": "TRADING"
+        },
+        "velocity_counters": {
+          "deposits_today": 8,
+          "withdrawals_today": 7,
+          "total_in_today": 347890.00,
+          "total_out_today": 342100.00,
+          "unique_crypto_exchanges": 5
+        },
+        "behavioral_profile": {
+          "rapid_fund_cycling": true,
+          "multiple_exchange_accounts": true,
+          "international_wires": "DAILY",
+          "cash_intensive": false,
+          "structured_deposits": true
+        },
+        "crypto_metadata": {
+          "wallet_age_days": 890,
+          "blockchain_verified": true,
+          "exchange_kyc_verified": true,
+          "trading_volume_percentile": 95,
+          "arbitrage_pattern": true
+        }
+      }
+    },
+    {
+      "name": "Shared Business Account Dispute",
+      "description": "Business partner making large withdrawal during partnership dissolution",
+      "expected_difficulty": "VERY_HIGH",
+      "expected_decision": "REVIEW",
+      "likely_system_decision": "APPROVE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-PARTNERSHIP-DISPUTE",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T22:58:45.123Z"
+        },
+        "financial": {
+          "amount": 73400.00,
+          "currency": "USD",
+          "account_type": "BUSINESS",
+          "transfer_type": "INTERNAL",
+          "destination_account": "PERSONAL_CHECKING"
+        },
+        "card": {
+          "masked_pan": "************3421",
+          "bin": "514839",
+          "card_brand": "MASTERCARD",
+          "card_type": "BUSINESS_DEBIT",
+          "card_present": false
+        },
+        "customer": {
+          "customer_id": "BUSI-2018-JOINT-9C",
+          "customer_since": "2018-03-12",
+          "age_of_account_days": 2140,
+          "account_signatories": 2,
+          "both_signatures_required": false
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "single_signature": true,
+          "other_signatory_notified": false
+        },
+        "velocity_counters": {
+          "large_transfers_lifetime": 3,
+          "transfers_to_personal": 1,
+          "account_balance_before": 146800.00,
+          "account_balance_after": 73400.00
+        },
+        "behavioral_profile": {
+          "typical_transfer_amount": 5000.00,
+          "business_revenue_pattern": "STEADY",
+          "unusual_hour_activity": true,
+          "pattern_change_days_ago": 3
+        },
+        "business_context": {
+          "recent_dispute_filing": true,
+          "partnership_dissolution": "IN_PROGRESS",
+          "legal_hold": false,
+          "authorized_transaction": true,
+          "contentious_split": true
+        }
+      }
+    },
+    {
+      "name": "Medical Tourism Prepayment",
+      "description": "Large medical procedure prepayment abroad - legitimate but suspicious",
+      "expected_difficulty": "HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "REVIEW",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-MEDICAL-TOURISM-7B8A",
+          "transaction_type": "WIRE_TRANSFER",
+          "transaction_datetime": "2024-01-20T09:15:00.000Z"
+        },
+        "financial": {
+          "amount": 23500.00,
+          "currency": "USD",
+          "wire_type": "INTERNATIONAL",
+          "destination_country": "TR",
+          "destination_bank": "TURKIYE_IS_BANKASI"
+        },
+        "customer": {
+          "customer_id": "CUST-2011-MEDICAL-4D",
+          "customer_since": "2011-07-18",
+          "age_of_account_days": 4568,
+          "recent_medical_searches": true
+        },
+        "merchant": {
+          "recipient_name": "Istanbul Medical Center",
+          "recipient_type": "MEDICAL_FACILITY",
+          "verified_medical_provider": true
+        },
+        "velocity_counters": {
+          "international_wires_lifetime": 0,
+          "medical_payments_lifetime": 0,
+          "large_payments_90d": 1
+        },
+        "behavioral_profile": {
+          "international_transfer_history": "NEVER",
+          "medical_payment_history": "INSURANCE_ONLY",
+          "savings_withdrawal_yesterday": 24000.00
+        },
+        "additional_context": {
+          "procedure_type": "DENTAL_IMPLANTS",
+          "cost_savings_vs_us": 75,
+          "medical_tourism_package": true,
+          "includes_travel_accommodation": true,
+          "consultation_calls_logged": 3
+        }
+      }
+    },
+    {
+      "name": "Gig Economy Income Spike",
+      "description": "Sudden massive income from viral content - looks like account takeover",
+      "expected_difficulty": "HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "DECLINE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-VIRAL-INCOME-5C9D",
+          "transaction_type": "DEPOSIT",
+          "transaction_datetime": "2024-01-20T14:22:18.345Z"
+        },
+        "financial": {
+          "amount": 127845.00,
+          "currency": "USD",
+          "deposit_source": "TIKTOK_CREATOR_FUND",
+          "payment_processor": "STRIPE"
+        },
+        "customer": {
+          "customer_id": "CUST-2022-CREATOR-8A",
+          "customer_since": "2022-04-10",
+          "age_of_account_days": 650,
+          "age": 19,
+          "occupation": "Student"
+        },
+        "velocity_counters": {
+          "largest_deposit_ever": 127845.00,
+          "previous_largest_deposit": 247.00,
+          "creator_payments_30d": 3,
+          "total_creator_income_lifetime": 892.00
+        },
+        "behavioral_profile": {
+          "typical_monthly_income": 800.00,
+          "income_source": "PART_TIME_JOB",
+          "sudden_wealth": true,
+          "account_age_vs_income": "MASSIVE_MISMATCH"
+        },
+        "platform_metadata": {
+          "viral_video_views": 47000000,
+          "follower_count_yesterday": 12000,
+          "follower_count_today": 3400000,
+          "brand_sponsorship": true,
+          "verified_creator": true
+        }
+      }
+    },
+    {
+      "name": "Divorce Asset Hidden Transfer",
+      "description": "Attempting to hide assets during divorce - authorized but potentially fraudulent",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "DECLINE",
+      "likely_system_decision": "APPROVE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-DIVORCE-HIDE-3A7F",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T11:30:00.000Z"
+        },
+        "financial": {
+          "amount": 9999.99,
+          "currency": "USD",
+          "purchase_type": "GIFT_CARD"
+        },
+        "card": {
+          "masked_pan": "************8234",
+          "bin": "448210",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-GIFTCARD-MALL",
+          "merchant_name": "GiftCardMall.com",
+          "merchant_category_code": "5999",
+          "merchant_category": "Miscellaneous Retail"
+        },
+        "customer": {
+          "customer_id": "CUST-2009-DIV-6B8C",
+          "customer_since": "2009-12-03",
+          "age_of_account_days": 5161,
+          "marital_status_change": "PENDING_DIVORCE"
+        },
+        "velocity_counters": {
+          "gift_card_purchases_7d": 12,
+          "total_gift_cards_7d": 119999.88,
+          "structured_amounts": true,
+          "just_under_10k": true
+        },
+        "behavioral_profile": {
+          "gift_card_purchase_history": "RARE",
+          "recent_pattern_change": true,
+          "cash_equivalent_purchases": "SUDDEN_SPIKE",
+          "joint_account_removal": "3_DAYS_AGO"
+        },
+        "legal_context": {
+          "divorce_filing_date": "2024-01-10",
+          "asset_disclosure_due": "2024-01-25",
+          "financial_restraining_order": false,
+          "pattern_indicates": "ASSET_CONCEALMENT"
+        }
+      }
+    },
+    {
+      "name": "Sanctions Evasion Layering",
+      "description": "Complex transaction designed to evade sanctions screening",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "DECLINE",
+      "likely_system_decision": "REVIEW",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-SANCTIONS-EVADE-9C2D",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T08:45:12.678Z"
+        },
+        "financial": {
+          "amount": 8500.00,
+          "currency": "EUR",
+          "amount_usd": 9265.00,
+          "transfer_route": "CORRESPONDENT_BANKING"
+        },
+        "merchant": {
+          "intermediary_bank_1": "DUBAI_ISLAMIC_BANK",
+          "intermediary_bank_2": "TURKISH_BANK",
+          "final_beneficiary_bank": "UNNAMED_SYRIAN_BANK",
+          "beneficiary_name": "TECH_SUPPLIES_LLC"
+        },
+        "customer": {
+          "customer_id": "CUST-2021-IMPORT-7A",
+          "customer_since": "2021-06-15",
+          "age_of_account_days": 949,
+          "business_type": "IMPORT_EXPORT"
+        },
+        "transaction_metadata": {
+          "payment_reference": "CONSULTING_SERVICES",
+          "actual_goods": "DUAL_USE_TECHNOLOGY",
+          "ultimate_beneficiary": "OBSCURED",
+          "shell_company_indicators": true
+        },
+        "velocity_counters": {
+          "similar_amount_transfers_30d": 8,
+          "different_beneficiaries_same_amount": 8,
+          "routing_complexity_score": 0.95
+        },
+        "compliance_flags": {
+          "sanctions_country_adjacent": true,
+          "dual_use_goods_possible": true,
+          "beneficiary_name_variation": true,
+          "layering_pattern": true,
+          "trade_based_laundering_risk": "HIGH"
+        }
+      }
+    },
+    {
+      "name": "Time Zone Arbitrage Trading",
+      "description": "Legitimate forex trader exploiting time zone differences - looks like fraud ring",
+      "expected_difficulty": "VERY_HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "DECLINE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-FOREX-ARB-4B9A",
+          "transaction_type": "FOREX_TRADE",
+          "transaction_datetime": "2024-01-20T21:00:00.000Z"
+        },
+        "financial": {
+          "amount": 250000.00,
+          "currency": "USD",
+          "trade_pair": "USD/JPY",
+          "leverage": "50:1"
+        },
+        "customer": {
+          "customer_id": "CUST-2019-FOREX-3C",
+          "customer_since": "2019-09-20",
+          "age_of_account_days": 1583,
+          "professional_trader": true
+        },
+        "device": {
+          "device_id": "DEV-VPS-TOKYO-8A",
+          "device_type": "VPS",
+          "device_location": "Tokyo",
+          "automated_trading": true
+        },
+        "trading_pattern": {
+          "trades_per_second": 0.5,
+          "pattern": "MARKET_OPEN_EXPLOIT",
+          "simultaneous_positions": 12,
+          "accounts_coordinated": 3
+        },
+        "velocity_counters": {
+          "trades_last_hour": 180,
+          "volume_last_hour": 15000000.00,
+          "profit_last_hour": 8234.00,
+          "connected_accounts_trading": 3
+        },
+        "behavioral_profile": {
+          "trading_hours": "ASIAN_MARKET_OPEN",
+          "strategy": "LATENCY_ARBITRAGE",
+          "vpn_locations": ["Tokyo", "Singapore", "Sydney"],
+          "pattern_similarity_to_fraud": 0.89
+        }
+      }
+    },
+    {
+      "name": "Homeless Person First Banking",
+      "description": "Recently housed homeless person's first transactions - erratic but legitimate",
+      "expected_difficulty": "HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "DECLINE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-FIRST-BANK-6D8C",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T10:30:45.234Z"
+        },
+        "financial": {
+          "amount": 843.27,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************2341",
+          "bin": "489302",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": true,
+          "entry_mode": "CHIP"
+        },
+        "merchant": {
+          "merchant_id": "MID-WALMART-8923",
+          "merchant_name": "Walmart #8923",
+          "merchant_category_code": "5411",
+          "merchant_category": "Grocery Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2024-NEW-9A3C",
+          "customer_since": "2024-01-15",
+          "age_of_account_days": 5,
+          "account_opening_channel": "SOCIAL_SERVICES",
+          "government_benefit_recipient": true
+        },
+        "transaction_pattern": {
+          "unusual_purchase_mix": true,
+          "bulk_buying": true,
+          "essential_items": true,
+          "cash_back": 200.00
+        },
+        "velocity_counters": {
+          "transactions_since_account_open": 12,
+          "unique_merchants": 8,
+          "atm_attempts": 4,
+          "declined_transactions": 3
+        },
+        "behavioral_profile": {
+          "no_transaction_history": true,
+          "address_type": "TRANSITIONAL_HOUSING",
+          "phone_type": "GOVERNMENT_PROVIDED",
+          "email_domain": "socialservices.gov",
+          "case_worker_verified": true
+        }
+      }
+    },
+    {
+      "name": "Cultural Banking Mismatch",
+      "description": "Immigrant using banking patterns from home country - looks suspicious in US",
+      "expected_difficulty": "HIGH",
+      "expected_decision": "APPROVE",
+      "likely_system_decision": "REVIEW",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-CULTURAL-DIFF-8B7A",
+          "transaction_type": "CASH_DEPOSIT",
+          "transaction_datetime": "2024-01-20T19:45:00.000Z"
+        },
+        "financial": {
+          "amount": 9800.00,
+          "currency": "USD",
+          "cash_deposit": true
+        },
+        "customer": {
+          "customer_id": "CUST-2023-IMMIG-5C",
+          "customer_since": "2023-08-10",
+          "age_of_account_days": 163,
+          "country_of_origin": "India",
+          "visa_status": "H1B"
+        },
+        "velocity_counters": {
+          "cash_deposits_30d": 4,
+          "total_cash_deposited_30d": 38900.00,
+          "structured_deposit_pattern": false
+        },
+        "behavioral_profile": {
+          "cash_preference": "HIGH",
+          "check_usage": "NEVER",
+          "family_remittances": "MONTHLY",
+          "hawala_pattern_similarity": 0.76
+        },
+        "cultural_context": {
+          "home_country_banking": "CASH_DOMINANT",
+          "extended_family_support": true,
+          "rotating_credit_association": true,
+          "community_lending_circle": "ACTIVE",
+          "legitimate_cultural_practice": true
+        }
+      }
+    },
+    {
+      "name": "Zero-Day Fraud Pattern",
+      "description": "Brand new fraud pattern never seen before - no historical data",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "DECLINE",
+      "likely_system_decision": "APPROVE",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-ZERODAY-NEW-7F8E",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T15:30:22.456Z"
+        },
+        "financial": {
+          "amount": 3127.83,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************6745",
+          "bin": "547839",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_present": false,
+          "tokenized": true
+        },
+        "merchant": {
+          "merchant_id": "MID-NEWMERCH-0001",
+          "merchant_name": "TechStart Solutions",
+          "merchant_category_code": "5734",
+          "merchant_category": "Computer Software",
+          "days_in_business": 3,
+          "merchant_risk_score": null
+        },
+        "customer": {
+          "customer_id": "CUST-2014-GOOD-2B9A",
+          "customer_since": "2014-11-30",
+          "age_of_account_days": 3343,
+          "perfect_payment_history": true
+        },
+        "novel_pattern": {
+          "new_fraud_technique": true,
+          "pattern_never_seen": true,
+          "no_matching_signatures": true,
+          "ml_confidence": 0.12,
+          "rule_engine_match": false
+        },
+        "technical_fingerprint": {
+          "novel_device_signature": true,
+          "unknown_browser_config": true,
+          "new_encryption_method": true,
+          "behavioral_biometrics": "NO_MATCH",
+          "ai_generated_pattern": 0.94
+        }
+      }
+    },
+    {
+      "name": "Data Quality Catastrophe",
+      "description": "Transaction with severely corrupted/missing data - system must decide with incomplete info",
+      "expected_difficulty": "EXTREME",
+      "expected_decision": "REVIEW",
+      "likely_system_decision": "ERROR",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-CORRUPT-DATA-3C9F",
+          "transaction_type": null,
+          "transaction_datetime": "2024-01-20T00:00:00.000Z"
+        },
+        "financial": {
+          "amount": 0.00,
+          "currency": ""
+        },
+        "card": {
+          "masked_pan": "************0000",
+          "bin": "000000",
+          "card_brand": "UNKNOWN",
+          "card_type": null,
+          "card_present": null
+        },
+        "merchant": {
+          "merchant_id": null,
+          "merchant_name": "[CORRUPTED]",
+          "merchant_category_code": "0000",
+          "merchant_category": null
+        },
+        "customer": {
+          "customer_id": "CUST-????-????-??",
+          "customer_since": null,
+          "age_of_account_days": -1
+        },
+        "error_flags": {
+          "data_corruption": true,
+          "fields_missing": 23,
+          "validation_failures": 15,
+          "backup_data_unavailable": true,
+          "real_transaction": true,
+          "actual_amount": "UNKNOWN"
+        }
+      }
+    }
+  ]
+}

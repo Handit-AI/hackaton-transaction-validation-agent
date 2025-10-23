@@ -1,0 +1,1250 @@
+{
+  "use_cases": [
+    {
+      "name": "SIM Swap Account Draining",
+      "description": "Sophisticated SIM swap attack with account takeover - carefully mimics user behavior",
+      "attack_type": "SIM_SWAP_TAKEOVER",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Attacker studied victim's patterns, uses same merchants, similar amounts, but draining account",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-SIMSWAP-8F3A92",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T14:32:18.234Z"
+        },
+        "financial": {
+          "amount": 487.92,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************4829",
+          "bin": "414720",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-BESTBUY-ONLINE",
+          "merchant_name": "BestBuy.com",
+          "merchant_category_code": "5732",
+          "merchant_category": "Electronics Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2015-VICTIM-8F3A",
+          "customer_since": "2015-02-10",
+          "age_of_account_days": 3256,
+          "phone_carrier_change": "2_HOURS_AGO",
+          "sim_activation": "2_HOURS_AGO"
+        },
+        "device": {
+          "device_id": "DEV-NEW-UNKNOWN-2A9C",
+          "device_type": "MOBILE",
+          "device_os": "Android",
+          "days_since_device_first_seen": 0,
+          "device_model": "Different_from_usual",
+          "app_freshly_installed": true
+        },
+        "location": {
+          "ip_address": "192.168.1.1",
+          "ip_city": "Same_as_victim_city",
+          "vpn_detected": false,
+          "residential_proxy": true
+        },
+        "authentication": {
+          "authentication_method": "SMS_OTP",
+          "otp_sent_to_new_number": true,
+          "password_reset_performed": true,
+          "security_questions_reset": true,
+          "email_access_attempted": false
+        },
+        "velocity_counters": {
+          "transactions_since_sim_swap": 3,
+          "gift_card_purchases_2h": 2,
+          "digital_goods_2h": 3,
+          "total_spent_2h": 1463.76
+        },
+        "behavioral_profile": {
+          "typical_merchant": true,
+          "amount_within_normal_range": true,
+          "purchase_time_normal": true,
+          "but_sim_just_swapped": true,
+          "account_changes_after_swap": ["password", "pin", "email"]
+        }
+      }
+    },
+    {
+      "name": "Synthetic Identity Final Bust-Out",
+      "description": "Three-year synthetic identity executing perfectly timed bust-out",
+      "attack_type": "SYNTHETIC_IDENTITY_BUST_OUT",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Built perfect credit over 3 years, now maxing all cards simultaneously",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-BUSTOUT-9B2C47",
+          "transaction_type": "CASH_ADVANCE",
+          "transaction_datetime": "2024-01-20T16:45:33.678Z"
+        },
+        "financial": {
+          "amount": 4950.00,
+          "currency": "USD",
+          "cash_advance_fee": 247.50,
+          "credit_limit": 5000.00,
+          "current_balance": 4950.00
+        },
+        "card": {
+          "masked_pan": "************7234",
+          "bin": "533948",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_present": true,
+          "entry_mode": "CHIP"
+        },
+        "merchant": {
+          "merchant_id": "ATM-CHASE-8923",
+          "merchant_name": "Chase ATM #8923",
+          "merchant_category_code": "6011",
+          "merchant_category": "Financial Institutions"
+        },
+        "customer": {
+          "customer_id": "CUST-2021-SYNTH-3D8E",
+          "customer_since": "2021-01-15",
+          "age_of_account_days": 1100,
+          "credit_score": 748,
+          "payment_history": "PERFECT_36_MONTHS",
+          "ssn_issued_date": "2020-12-20"
+        },
+        "location": {
+          "atm_location": "Major city downtown",
+          "distance_from_address": 0.5
+        },
+        "velocity_counters": {
+          "cash_advances_today": 4,
+          "different_banks_maxed_today": 4,
+          "total_credit_accessed_today": 19800.00,
+          "credit_line_increases_60d": 3,
+          "perfect_payment_history_months": 36
+        },
+        "behavioral_profile": {
+          "gradual_limit_increases": true,
+          "always_paid_on_time": true,
+          "utilization_below_30_percent_35mo": true,
+          "sudden_max_out_pattern": true,
+          "simultaneous_bust_out": true,
+          "address_is_mail_drop": true,
+          "employment_unverifiable": true
+        }
+      }
+    },
+    {
+      "name": "Business Email Compromise Mule Account",
+      "description": "Money mule account receiving BEC fraud proceeds - sophisticated layering",
+      "attack_type": "BEC_MONEY_MULE",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Mule recruited thinking it's legitimate job, complex fund flow",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-BECMULE-5E9A13",
+          "transaction_type": "WIRE_RECEIPT",
+          "transaction_datetime": "2024-01-20T09:15:22.456Z"
+        },
+        "financial": {
+          "amount": 87650.00,
+          "currency": "USD",
+          "wire_type": "DOMESTIC",
+          "originator": "ACME_CORP_ACCOUNTS_PAYABLE"
+        },
+        "card": {
+          "masked_pan": "************9012",
+          "bin": "421783",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "WIRE-INCOMING",
+          "merchant_name": "Wire Transfer Incoming",
+          "merchant_category_code": "6536",
+          "merchant_category": "Money Transfer"
+        },
+        "customer": {
+          "customer_id": "CUST-2023-MULE-6B4F",
+          "customer_since": "2023-11-01",
+          "age_of_account_days": 80,
+          "occupation_listed": "Freelance_Payment_Processor",
+          "recruited_via": "Work_From_Home_Ad"
+        },
+        "location": {
+          "account_opened_location": "Different_state",
+          "current_location": "Residential",
+          "wire_origin": "Corporate_account"
+        },
+        "velocity_counters": {
+          "large_deposits_lifetime": 2,
+          "immediate_withdrawals_after_deposit": 2,
+          "different_wire_originators": 2,
+          "outgoing_wires_after_receipt": 2,
+          "percentage_moved_immediately": 95
+        },
+        "behavioral_profile": {
+          "account_dormant_until_recently": true,
+          "sudden_high_value_activity": true,
+          "receives_then_immediately_sends": true,
+          "multiple_beneficiaries": true,
+          "mule_recruitment_pattern": true,
+          "victim_company_confirmed_fraud": false,
+          "wire_recall_likely": true
+        }
+      }
+    },
+    {
+      "name": "First-Party Friendly Fraud Chargeback",
+      "description": "Customer making legitimate purchase with intent to chargeback - friendly fraud",
+      "attack_type": "FRIENDLY_FRAUD",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Buyer has history of 'item not received' claims, targeting high-value items",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-FRIENDLY-8C3D92",
+          "transaction_type": "ECOMMERCE",
+          "transaction_datetime": "2024-01-20T20:30:45.789Z"
+        },
+        "financial": {
+          "amount": 1899.99,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************3456",
+          "bin": "445062",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-MARKETPLACE-SELLER",
+          "merchant_name": "eBay Seller - TechDeals2024",
+          "merchant_category_code": "5999",
+          "merchant_category": "Miscellaneous Retail",
+          "seller_account_age_days": 15
+        },
+        "customer": {
+          "customer_id": "CUST-2019-FRAUDSTER-7A9C",
+          "customer_since": "2019-09-14",
+          "age_of_account_days": 1589,
+          "chargeback_history": true,
+          "chargeback_win_rate": 0.8
+        },
+        "device": {
+          "device_id": "DEV-KNOWN-PROBLEMATIC",
+          "device_type": "MOBILE",
+          "device_os": "iOS",
+          "days_since_device_first_seen": 423,
+          "associated_with_chargebacks": 5
+        },
+        "location": {
+          "shipping_address": "Different_from_billing",
+          "reshipping_service": true,
+          "high_fraud_zip_code": true
+        },
+        "velocity_counters": {
+          "marketplace_purchases_30d": 8,
+          "chargebacks_filed_90d": 3,
+          "successful_chargebacks_90d": 3,
+          "electronics_purchases_30d": 6
+        },
+        "behavioral_profile": {
+          "targets_new_sellers": true,
+          "high_value_electronics": true,
+          "uses_guest_checkout": false,
+          "screenshots_everything": true,
+          "chargeback_reason_pattern": "Item_not_as_described",
+          "keeps_items_and_money": true,
+          "social_media_reselling": true
+        }
+      }
+    },
+    {
+      "name": "Insider Bank Employee Fraud",
+      "description": "Bank employee using insider knowledge to bypass controls",
+      "attack_type": "INSIDER_THREAT",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Employee knows detection rules, times transactions to avoid alerts",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-INSIDER-2B8F56",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T17:59:59.999Z"
+        },
+        "financial": {
+          "amount": 9999.99,
+          "currency": "USD",
+          "transfer_type": "INTERNAL"
+        },
+        "card": {
+          "masked_pan": "************8901",
+          "bin": "490501",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "INTERNAL-TRANSFER",
+          "merchant_name": "Account Transfer",
+          "merchant_category_code": "6012",
+          "merchant_category": "Financial Institutions"
+        },
+        "customer": {
+          "customer_id": "CUST-2018-DORMANT-5C7E",
+          "customer_since": "2018-03-28",
+          "age_of_account_days": 2128,
+          "account_status": "DORMANT",
+          "last_genuine_activity": "731_DAYS_AGO"
+        },
+        "location": {
+          "transaction_origin": "Internal_system",
+          "branch_location": "Headquarters",
+          "after_hours": true
+        },
+        "authentication": {
+          "authentication_method": "EMPLOYEE_OVERRIDE",
+          "elevated_privileges_used": true,
+          "audit_log_disabled": false,
+          "legitimate_looking_reason": "Customer_request"
+        },
+        "velocity_counters": {
+          "dormant_account_accesses_30d": 12,
+          "just_under_10k_transfers": 8,
+          "different_dormant_accounts": 8,
+          "end_of_day_transactions": 8
+        },
+        "behavioral_profile": {
+          "employee_access_pattern": true,
+          "knows_detection_thresholds": true,
+          "structured_amounts": true,
+          "targets_dormant_accounts": true,
+          "times_to_avoid_reviews": true,
+          "small_amounts_many_accounts": true,
+          "cleanup_attempts_detected": true
+        }
+      }
+    },
+    {
+      "name": "Triangulation Fraud on Marketplace",
+      "description": "Fraudster using stolen card to fulfill legitimate marketplace order",
+      "attack_type": "TRIANGULATION_FRAUD",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Victim thinks they're buying from marketplace, fraudster uses stolen card at retailer",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-TRIANGLE-9D4A67",
+          "transaction_type": "ECOMMERCE",
+          "transaction_datetime": "2024-01-20T11:20:33.567Z"
+        },
+        "financial": {
+          "amount": 649.99,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************2345",
+          "bin": "522981",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_present": false,
+          "card_not_present_transaction": true
+        },
+        "merchant": {
+          "merchant_id": "MID-APPLE-ONLINE",
+          "merchant_name": "Apple.com",
+          "merchant_category_code": "5732",
+          "merchant_category": "Electronics Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2016-STOLEN-8B2C",
+          "customer_since": "2016-06-18",
+          "age_of_account_days": 2772,
+          "card_reported_stolen": false,
+          "unaware_of_fraud": true
+        },
+        "device": {
+          "device_id": "DEV-FRAUDSTER-VPN",
+          "device_type": "DESKTOP",
+          "device_os": "Windows",
+          "browser": "Chrome",
+          "private_browsing": true,
+          "webrtc_leak_prevented": true
+        },
+        "location": {
+          "shipping_address": "Different_person",
+          "ship_to": "Marketplace_buyer_address",
+          "billing_address": "Cardholder_address",
+          "ip_location": "Different_country"
+        },
+        "velocity_counters": {
+          "shipping_to_new_address": true,
+          "multiple_ship_addresses_24h": 5,
+          "different_retailers_24h": 5,
+          "marketplace_listing_correlation": true
+        },
+        "behavioral_profile": {
+          "triangulation_pattern": true,
+          "marketplace_price_undercut": true,
+          "quick_ship_needed": true,
+          "guest_checkout_used": true,
+          "no_account_creation": true,
+          "correlates_with_marketplace_order": true,
+          "dropship_fraud_pattern": true
+        }
+      }
+    },
+    {
+      "name": "Account Takeover via Credential Stuffing",
+      "description": "Automated credential stuffing attack that found valid login",
+      "attack_type": "CREDENTIAL_STUFFING_ATO",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Uses residential proxies, mimics human behavior, small transactions first",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-CREDSTUFF-6A9C47",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T03:45:12.345Z"
+        },
+        "financial": {
+          "amount": 49.99,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************5678",
+          "bin": "554213",
+          "card_brand": "MASTERCARD",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-SPOTIFY",
+          "merchant_name": "Spotify Premium",
+          "merchant_category_code": "5735",
+          "merchant_category": "Record Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2017-VICTIM-3B8D",
+          "customer_since": "2017-04-12",
+          "age_of_account_days": 2475,
+          "password_reused": true,
+          "breach_exposure": "CONFIRMED"
+        },
+        "device": {
+          "device_id": "DEV-BOT-RESIDENTIAL",
+          "device_type": "DESKTOP",
+          "browser": "Headless Chrome",
+          "automation_detected": false,
+          "residential_proxy": true,
+          "fingerprint_spoofed": true
+        },
+        "authentication": {
+          "authentication_method": "PASSWORD",
+          "login_attempts_before_success": 1,
+          "credential_stuffing_signature": true,
+          "password_from_breach": true,
+          "mfa_not_enrolled": true
+        },
+        "location": {
+          "ip_address": "Residential proxy",
+          "ip_reputation": "CLEAN",
+          "geolocation": "Same country",
+          "datacenter": false
+        },
+        "velocity_counters": {
+          "small_test_transactions": 3,
+          "subscription_services_added": 3,
+          "digital_goods_purchased": 2,
+          "testing_card_validity": true
+        },
+        "behavioral_profile": {
+          "login_time_unusual": true,
+          "immediate_purchase_after_login": true,
+          "no_browsing_behavior": true,
+          "direct_to_payment": true,
+          "subscription_fraud_pattern": true,
+          "will_escalate_if_successful": true
+        }
+      }
+    },
+    {
+      "name": "Refund Fraud with Fake Return",
+      "description": "Serial refunder using fake tracking numbers and social engineering",
+      "attack_type": "REFUND_FRAUD",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Creates convincing fake return evidence, targets automated systems",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-REFUND-8C4F91",
+          "transaction_type": "REFUND",
+          "transaction_datetime": "2024-01-20T14:22:18.789Z"
+        },
+        "financial": {
+          "amount": 2340.00,
+          "currency": "USD",
+          "original_purchase_amount": 2340.00,
+          "refund_type": "FULL"
+        },
+        "card": {
+          "masked_pan": "************9023",
+          "bin": "403628",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-ONLINE-RETAILER",
+          "merchant_name": "Major Online Retailer",
+          "merchant_category_code": "5999",
+          "merchant_category": "Miscellaneous Retail"
+        },
+        "customer": {
+          "customer_id": "CUST-2020-REFUNDER-SERIAL",
+          "customer_since": "2020-07-15",
+          "age_of_account_days": 1284,
+          "refund_rate": 0.73,
+          "successful_refund_rate": 0.95
+        },
+        "location": {
+          "return_tracking": "FAKE_TRACKING_NUMBER",
+          "actual_return": false,
+          "package_weight_mismatch": true
+        },
+        "velocity_counters": {
+          "refund_requests_90d": 23,
+          "successful_refunds_90d": 22,
+          "different_retailers_refunded": 8,
+          "total_refunded_90d": 18750.00
+        },
+        "behavioral_profile": {
+          "targets_expensive_items": true,
+          "claims_damaged_or_wrong_item": true,
+          "provides_fake_evidence": true,
+          "threatens_social_media": true,
+          "knows_policy_loopholes": true,
+          "keeps_items": true,
+          "resells_on_marketplace": true,
+          "multiple_accounts_same_address": true
+        }
+      }
+    },
+    {
+      "name": "Sleeper Fraud Cell Activation",
+      "description": "Dormant fraud cell suddenly activating for coordinated attack",
+      "attack_type": "ORGANIZED_FRAUD_RING",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Multiple accounts, aged properly, activating simultaneously",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-SLEEPER-2B8C56",
+          "transaction_type": "PURCHASE",
+          "transaction_datetime": "2024-01-20T22:15:00.000Z"
+        },
+        "financial": {
+          "amount": 3456.78,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************3456",
+          "bin": "485932",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-ELECTRONICS-HIGH",
+          "merchant_name": "NewEgg.com",
+          "merchant_category_code": "5732",
+          "merchant_category": "Electronics Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2022-SLEEPER-9A3D",
+          "customer_since": "2022-01-15",
+          "age_of_account_days": 735,
+          "account_dormant_period": 700,
+          "suddenly_active": true
+        },
+        "location": {
+          "ip_address": "45.32.XXX.XXX",
+          "datacenter_ip": true,
+          "bulletproof_hosting": true
+        },
+        "velocity_counters": {
+          "accounts_activated_same_hour": 47,
+          "similar_purchase_patterns": 47,
+          "same_merchant_targeted": 47,
+          "coordinated_timing": true
+        },
+        "behavioral_profile": {
+          "account_aging_period": "2_YEARS",
+          "minimal_activity_during_aging": true,
+          "small_purchases_to_build_history": true,
+          "sudden_coordinated_activation": true,
+          "targets_high_value_resellable": true,
+          "linked_by_device_fingerprint": true,
+          "fraud_ring_pattern": true,
+          "will_bust_out_simultaneously": true
+        }
+      }
+    },
+    {
+      "name": "Deepfake Voice Authentication Bypass",
+      "description": "Using AI-generated voice to bypass phone verification",
+      "attack_type": "DEEPFAKE_SOCIAL_ENGINEERING",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "AI voice passes voice biometrics, has victim's personal info",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-DEEPFAKE-7C9F83",
+          "transaction_type": "WIRE_TRANSFER",
+          "transaction_datetime": "2024-01-20T10:30:45.234Z"
+        },
+        "financial": {
+          "amount": 24500.00,
+          "currency": "USD",
+          "wire_type": "EXTERNAL"
+        },
+        "card": {
+          "masked_pan": "************7823",
+          "bin": "524901",
+          "card_brand": "MASTERCARD",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "WIRE-EXTERNAL",
+          "merchant_name": "Wire Transfer",
+          "merchant_category_code": "6536",
+          "merchant_category": "Money Transfer"
+        },
+        "customer": {
+          "customer_id": "CUST-2014-TARGET-8D2C",
+          "customer_since": "2014-09-08",
+          "age_of_account_days": 3420,
+          "voice_auth_enrolled": true,
+          "high_net_worth": true
+        },
+        "authentication": {
+          "authentication_method": "VOICE_BIOMETRIC",
+          "voice_match_score": 0.89,
+          "call_originated": "INBOUND",
+          "caller_id": "SPOOFED",
+          "personal_info_verified": true,
+          "ai_voice_suspected": true
+        },
+        "location": {
+          "call_origin": "VOIP",
+          "background_noise": "SYNTHETIC",
+          "latency_pattern": "PROCESSING_DELAY"
+        },
+        "velocity_counters": {
+          "wire_transfer_requests_lifetime": 2,
+          "large_transfers_lifetime": 0,
+          "account_changes_after_call": ["email", "phone", "address"]
+        },
+        "behavioral_profile": {
+          "unusual_request_pattern": true,
+          "urgency_emphasized": true,
+          "avoids_video_verification": true,
+          "background_noise_synthetic": true,
+          "voice_cadence_unusual": true,
+          "requests_limit_increases": true,
+          "social_media_data_mining": true
+        }
+      }
+    },
+    {
+      "name": "Supply Chain Payment Injection",
+      "description": "Fraudster injecting payments into legitimate B2B supply chain",
+      "attack_type": "SUPPLY_CHAIN_FRAUD",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Mimics legitimate B2B patterns, uses compromised vendor credentials",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-SUPPLY-4B8A92",
+          "transaction_type": "B2B_PAYMENT",
+          "transaction_datetime": "2024-01-20T09:00:00.000Z"
+        },
+        "financial": {
+          "amount": 47823.45,
+          "currency": "USD",
+          "payment_terms": "NET30",
+          "invoice_number": "INV-2024-0847"
+        },
+        "card": {
+          "masked_pan": "************1776",
+          "bin": "476173",
+          "card_brand": "VISA",
+          "card_type": "BUSINESS",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-B2B-PLATFORM",
+          "merchant_name": "Business Payment Platform",
+          "merchant_category_code": "7399",
+          "merchant_category": "Business Services"
+        },
+        "customer": {
+          "customer_id": "BUSI-2019-COMPROMISED",
+          "customer_since": "2019-05-20",
+          "age_of_account_days": 1706,
+          "vendor_account": true,
+          "credentials_compromised": true
+        },
+        "location": {
+          "payment_routing": "CHANGED_RECENTLY",
+          "bank_account": "NEW_ACCOUNT",
+          "beneficiary_country": "Different_from_usual"
+        },
+        "authentication": {
+          "authentication_method": "COMPROMISED_CREDENTIALS",
+          "session_hijacked": false,
+          "legitimate_session_token": true,
+          "account_changes": ["payment_routing", "notification_email"]
+        },
+        "velocity_counters": {
+          "routing_changes_30d": 1,
+          "payments_to_new_routing": 3,
+          "total_diverted": 142470.35,
+          "follows_invoice_pattern": true
+        },
+        "behavioral_profile": {
+          "mimics_real_invoices": true,
+          "amount_within_normal_range": true,
+          "timing_matches_payment_cycle": true,
+          "vendor_email_compromised": true,
+          "invoice_manipulation": true,
+          "targets_accounting_dept": true,
+          "diverts_to_mule_account": true
+        }
+      }
+    },
+    {
+      "name": "Card Testing with ML Evasion",
+      "description": "Sophisticated card testing using ML adversarial techniques",
+      "attack_type": "CARD_TESTING_ADVANCED",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Uses adversarial ML to evade detection, mimics legitimate micro-transactions",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-MLTEST-6D8E23",
+          "transaction_type": "DONATION",
+          "transaction_datetime": "2024-01-20T07:23:45.567Z"
+        },
+        "financial": {
+          "amount": 1.37,
+          "currency": "USD"
+        },
+        "card": {
+          "masked_pan": "************8912",
+          "bin": "414709",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false,
+          "generated_card_number": true
+        },
+        "merchant": {
+          "merchant_id": "MID-CHARITY-FAKE-2D",
+          "merchant_name": "Children's Relief Fund",
+          "merchant_category_code": "8398",
+          "merchant_category": "Charitable Organizations",
+          "merchant_created": "3_DAYS_AGO"
+        },
+        "customer": {
+          "customer_id": "CUST-GENERATED-8A7C",
+          "customer_since": "2024-01-20",
+          "age_of_account_days": 0,
+          "email_domain": "disposable",
+          "name_generated": true
+        },
+        "device": {
+          "device_id": "DEV-AUTOMATED-CLUSTER",
+          "device_type": "EMULATED",
+          "browser": "Puppeteer",
+          "canvas_fingerprint": "RANDOMIZED",
+          "webgl_fingerprint": "SPOOFED"
+        },
+        "location": {
+          "ip_address": "Cloud provider",
+          "distributed_testing": true,
+          "multiple_geolocations": true
+        },
+        "velocity_counters": {
+          "micro_transactions_hour": 243,
+          "unique_cards_tested": 243,
+          "success_rate": 0.03,
+          "distributed_across_merchants": 8
+        },
+        "behavioral_profile": {
+          "adversarial_amounts": true,
+          "mimics_donation_pattern": true,
+          "tests_boundary_values": true,
+          "uses_ml_evasion": true,
+          "rotating_fingerprints": true,
+          "binning_attack": true,
+          "card_number_generation_algorithm": true
+        }
+      }
+    },
+    {
+      "name": "Insider Threat Account Enumeration",
+      "description": "Malicious insider harvesting account details for future sale",
+      "attack_type": "INSIDER_DATA_THEFT",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Employee accessing accounts within normal duties but with malicious pattern",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-INSIDER-ENUM",
+          "transaction_type": "BALANCE_CHECK",
+          "transaction_datetime": "2024-01-20T16:45:00.000Z"
+        },
+        "financial": {
+          "amount": 0.00,
+          "currency": "USD",
+          "transaction_type": "INQUIRY"
+        },
+        "card": {
+          "masked_pan": "************4521",
+          "bin": "489234",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "INTERNAL-SYSTEM",
+          "merchant_name": "Customer Service Portal",
+          "merchant_category_code": "0000",
+          "merchant_category": "Internal"
+        },
+        "customer": {
+          "customer_id": "CUST-2015-HIGVAL-9C4A",
+          "customer_since": "2015-03-18",
+          "age_of_account_days": 3230,
+          "high_value_account": true,
+          "wealth_segment": "PREMIUM"
+        },
+        "authentication": {
+          "authentication_method": "EMPLOYEE_ACCESS",
+          "legitimate_service_request": false,
+          "customer_not_on_call": true,
+          "no_ticket_number": true
+        },
+        "location": {
+          "access_location": "Call_center",
+          "workstation": "STATION_23",
+          "shift_time": "NORMAL"
+        },
+        "velocity_counters": {
+          "accounts_accessed_today": 347,
+          "high_value_accounts_accessed": 89,
+          "screenshots_detected": 0,
+          "data_exports_attempted": 0,
+          "unusual_access_pattern": true
+        },
+        "behavioral_profile": {
+          "systematic_enumeration": true,
+          "targets_high_value": true,
+          "no_customer_interaction": true,
+          "views_full_details": true,
+          "copies_to_notepad": true,
+          "pattern_indicates_harvesting": true,
+          "likely_selling_data": true,
+          "covers_tracks": true
+        }
+      }
+    },
+    {
+      "name": "Authorized Push Payment Scam",
+      "description": "Investment scam where victim authorizes payment to fraudster",
+      "attack_type": "APP_INVESTMENT_SCAM",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Victim groomed over weeks, genuinely believes in investment",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-APP-INVEST",
+          "transaction_type": "TRANSFER",
+          "transaction_datetime": "2024-01-20T11:30:00.000Z"
+        },
+        "financial": {
+          "amount": 15000.00,
+          "currency": "USD",
+          "transfer_type": "EXTERNAL"
+        },
+        "card": {
+          "masked_pan": "************6734",
+          "bin": "445821",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "P2P-CRYPTO-PLATFORM",
+          "merchant_name": "CryptoInvestPro",
+          "merchant_category_code": "6051",
+          "merchant_category": "Quasi Cash"
+        },
+        "customer": {
+          "customer_id": "CUST-2018-VICTIM-7A8B",
+          "customer_since": "2018-11-30",
+          "age_of_account_days": 1878,
+          "customer_age": 72,
+          "investment_experience": "NONE"
+        },
+        "location": {
+          "recipient_location": "Offshore",
+          "platform_registered": "Seychelles",
+          "no_regulatory_oversight": true
+        },
+        "velocity_counters": {
+          "transfers_to_platform_30d": 4,
+          "total_invested": 45000.00,
+          "escalating_amounts": true,
+          "no_withdrawals": true
+        },
+        "behavioral_profile": {
+          "grooming_period_days": 45,
+          "initial_small_success": true,
+          "fake_returns_shown": true,
+          "urgency_increasing": true,
+          "victim_convinced": true,
+          "family_concerns_dismissed": true,
+          "classic_ponzi_pattern": true,
+          "platform_will_disappear": true
+        }
+      }
+    },
+    {
+      "name": "Return Fraud with Insider Help",
+      "description": "Organized return fraud with retail employee processing fake returns",
+      "attack_type": "ORGANIZED_RETURN_FRAUD",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Employee processes returns for accomplices, no actual items returned",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-RETURN-INSIDER",
+          "transaction_type": "REFUND",
+          "transaction_datetime": "2024-01-20T21:45:30.123Z"
+        },
+        "financial": {
+          "amount": 487.92,
+          "currency": "USD",
+          "cash_refund": true
+        },
+        "card": {
+          "masked_pan": "************2341",
+          "bin": "517823",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_present": true,
+          "entry_mode": "CHIP"
+        },
+        "merchant": {
+          "merchant_id": "MID-RETAIL-STORE-8923",
+          "merchant_name": "Major Retailer #8923",
+          "merchant_category_code": "5311",
+          "merchant_category": "Department Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2023-ACCOMPLICE",
+          "customer_since": "2023-06-14",
+          "age_of_account_days": 220,
+          "linked_to_employee": true
+        },
+        "location": {
+          "store_location": "Same as employee store",
+          "register_number": "07",
+          "employee_register": true
+        },
+        "authentication": {
+          "authentication_method": "EMPLOYEE_OVERRIDE",
+          "manager_approval": false,
+          "receipt_provided": false,
+          "item_verified": false
+        },
+        "velocity_counters": {
+          "returns_to_this_employee": 23,
+          "cash_refunds_today": 8,
+          "no_receipt_returns": 8,
+          "employee_override_used": 8
+        },
+        "behavioral_profile": {
+          "always_same_employee": true,
+          "close_to_shift_end": true,
+          "no_actual_items": true,
+          "receipt_never_found": true,
+          "cash_only_refunds": true,
+          "employee_accomplice_pattern": true,
+          "structured_amounts": true,
+          "social_connection_confirmed": true
+        }
+      }
+    },
+    {
+      "name": "Crypto Drainer Smart Contract",
+      "description": "Victim interacting with malicious smart contract that drains wallet",
+      "attack_type": "CRYPTO_DRAINER",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Legitimate-looking DeFi platform, contract drains on interaction",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-DRAINER-5C8A",
+          "transaction_type": "CRYPTO_PURCHASE",
+          "transaction_datetime": "2024-01-20T23:15:45.789Z"
+        },
+        "financial": {
+          "amount": 5000.00,
+          "currency": "USD",
+          "crypto_amount": "2.1 ETH",
+          "gas_fees": 45.00
+        },
+        "card": {
+          "masked_pan": "************9234",
+          "bin": "486732",
+          "card_brand": "VISA",
+          "card_type": "DEBIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "CRYPTO-EXCHANGE",
+          "merchant_name": "Major Crypto Exchange",
+          "merchant_category_code": "6051",
+          "merchant_category": "Quasi Cash"
+        },
+        "customer": {
+          "customer_id": "CUST-2021-CRYPTO-4B7C",
+          "customer_since": "2021-02-14",
+          "age_of_account_days": 1071,
+          "crypto_experience": "INTERMEDIATE"
+        },
+        "location": {
+          "withdrawal_address": "MALICIOUS_CONTRACT",
+          "defi_platform": "FAKE_YIELD_FARM",
+          "contract_verified": false
+        },
+        "velocity_counters": {
+          "crypto_purchases_24h": 3,
+          "total_crypto_bought_24h": 12000.00,
+          "immediate_withdrawal": true,
+          "to_external_wallet": true
+        },
+        "behavioral_profile": {
+          "lured_by_high_yield": true,
+          "fake_platform_airdrop": true,
+          "approval_grants_unlimited": true,
+          "contract_will_drain_wallet": true,
+          "social_media_promotion": true,
+          "influencer_compromised": true,
+          "urgency_time_limit": true,
+          "victim_thinks_legitimate": true
+        }
+      }
+    },
+    {
+      "name": "Subscription Fraud Stack",
+      "description": "Creating multiple subscriptions to resell at discount",
+      "attack_type": "SUBSCRIPTION_ABUSE",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Uses different cards, family plan abuse, resells access",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-SUBSTACK-9B3A",
+          "transaction_type": "SUBSCRIPTION",
+          "transaction_datetime": "2024-01-20T08:30:00.000Z"
+        },
+        "financial": {
+          "amount": 34.99,
+          "currency": "USD",
+          "recurring": true,
+          "billing_cycle": "MONTHLY"
+        },
+        "card": {
+          "masked_pan": "************8234",
+          "bin": "403891",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false,
+          "virtual_card": true
+        },
+        "merchant": {
+          "merchant_id": "MID-STREAMING-SERVICE",
+          "merchant_name": "Premium Streaming Plus",
+          "merchant_category_code": "5735",
+          "merchant_category": "Record Stores"
+        },
+        "customer": {
+          "customer_id": "CUST-2022-RESELLER-6A9B",
+          "customer_since": "2022-07-22",
+          "age_of_account_days": 547,
+          "multiple_payment_methods": 12
+        },
+        "location": {
+          "account_region": "US",
+          "vpn_to_cheaper_region": false,
+          "actual_usage_location": "VARIOUS"
+        },
+        "velocity_counters": {
+          "subscription_signups_30d": 34,
+          "different_services": 8,
+          "family_plans_created": 8,
+          "unique_payment_methods": 12
+        },
+        "behavioral_profile": {
+          "creates_family_plans": true,
+          "sells_slots_online": true,
+          "uses_virtual_cards": true,
+          "max_account_sharing": true,
+          "profit_margin_per_slot": 0.5,
+          "telegram_sales_channel": true,
+          "violates_terms_of_service": true,
+          "scales_operation": true
+        }
+      }
+    },
+    {
+      "name": "Synthetic Identity with Piggybacking",
+      "description": "Synthetic identity using authorized user tradelines to build credit",
+      "attack_type": "SYNTHETIC_IDENTITY_ADVANCED",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Bought aged tradelines, perfect payment history, graduating to bust-out",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-SYNTHPIG-7B8C",
+          "transaction_type": "CREDIT_APPLICATION",
+          "transaction_datetime": "2024-01-20T12:00:00.000Z"
+        },
+        "financial": {
+          "amount": 25000.00,
+          "currency": "USD",
+          "credit_line_requested": 25000.00,
+          "current_total_credit": 85000.00
+        },
+        "card": {
+          "masked_pan": "************9876",
+          "bin": "548231",
+          "card_brand": "MASTERCARD",
+          "card_type": "CREDIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "CREDIT-APPLICATION",
+          "merchant_name": "Bank Credit Application",
+          "merchant_category_code": "6012",
+          "merchant_category": "Financial Institutions"
+        },
+        "customer": {
+          "customer_id": "CUST-2023-SYNTHETIC-8C4D",
+          "customer_since": "2023-01-01",
+          "age_of_account_days": 384,
+          "ssn_randomized": true,
+          "credit_profile_manufactured": true
+        },
+        "location": {
+          "application_address": "MAIL_DROP",
+          "utility_bills": "FAKE",
+          "employment": "UNVERIFIABLE"
+        },
+        "velocity_counters": {
+          "credit_apps_90d": 8,
+          "approved_credit_lines": 6,
+          "total_credit_obtained": 85000.00,
+          "utilization_increasing": true
+        },
+        "behavioral_profile": {
+          "purchased_tradelines": true,
+          "authorized_user_accounts": 5,
+          "credit_score_inflated": true,
+          "payment_history_perfect": true,
+          "approaching_bust_out": true,
+          "multiple_identities_same_address": true,
+          "credit_profile_only_2_years": true,
+          "will_max_and_disappear": true
+        }
+      }
+    },
+    {
+      "name": "E-commerce Platform Manipulation",
+      "description": "Seller and buyer collusion for money laundering through marketplace",
+      "attack_type": "MARKETPLACE_COLLUSION",
+      "expected_decision": "DECLINE",
+      "why_sophisticated": "Looks like legitimate sales, actually moving illicit funds",
+      "input": {
+        "transaction": {
+          "transaction_id": "TXN-20240120-COLLUSION-4A9B",
+          "transaction_type": "MARKETPLACE_PURCHASE",
+          "transaction_datetime": "2024-01-20T15:20:15.432Z"
+        },
+        "financial": {
+          "amount": 8923.00,
+          "currency": "USD",
+          "marketplace_fee": 892.30,
+          "seller_receives": 8030.70
+        },
+        "card": {
+          "masked_pan": "************7823",
+          "bin": "421093",
+          "card_brand": "VISA",
+          "card_type": "CREDIT",
+          "card_present": false
+        },
+        "merchant": {
+          "merchant_id": "MID-MARKETPLACE",
+          "merchant_name": "Online Marketplace",
+          "merchant_category_code": "5999",
+          "merchant_category": "Miscellaneous Retail",
+          "seller_account": "VintageCollectibles2024"
+        },
+        "customer": {
+          "customer_id": "CUST-2023-BUYER-FAKE",
+          "customer_since": "2023-12-01",
+          "age_of_account_days": 50,
+          "linked_to_seller": true
+        },
+        "location": {
+          "buyer_location": "New York",
+          "seller_location": "New York",
+          "ship_to_address": "NON_EXISTENT",
+          "tracking_number": "FAKE"
+        },
+        "velocity_counters": {
+          "purchases_from_seller": 23,
+          "total_spent_with_seller": 187340.00,
+          "seller_only_sells_to_few": true,
+          "overpriced_items": true
+        },
+        "behavioral_profile": {
+          "collusion_pattern": true,
+          "money_laundering_layering": true,
+          "overvalued_goods": true,
+          "no_real_shipment": true,
+          "instant_5star_reviews": true,
+          "circular_buying_pattern": true,
+          "cash_out_immediately": true,
+          "linked_bank_accounts": true
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "purpose": "Test system's ability to detect sophisticated fraud patterns",
+    "expected_detection_rate": "System should catch 95%+ of these",
+    "categories": [
+      "account_takeover",
+      "synthetic_identity",
+      "money_mule",
+      "friendly_fraud",
+      "insider_threat",
+      "triangulation_fraud",
+      "credential_stuffing",
+      "refund_fraud",
+      "organized_crime",
+      "deepfake",
+      "supply_chain",
+      "card_testing",
+      "investment_scam",
+      "crypto_fraud",
+      "marketplace_fraud"
+    ],
+    "note": "These are clear fraud cases that a good system must detect"
+  }
+}
