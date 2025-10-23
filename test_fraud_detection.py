@@ -219,26 +219,30 @@ async def test_transaction(transaction_data: dict, scenario_name: str):
         print("-" * 40)
 
         if isinstance(result, dict):
-            # Check for the final decision from decision_aggregator
-            if 'decision_aggregator' in result:
-                decision = result['decision_aggregator']
-                print(f"\n🎯 Final Decision: {decision.get('final_decision', 'UNKNOWN')}")
-                print(f"📝 Conclusion: {decision.get('conclusion', 'No conclusion')}")
+            # Check for the final decision
+            if 'decision' in result:
+                decision = result['decision']
+                if isinstance(decision, dict):
+                    print(f"\n🎯 Final Decision: {decision.get('final_decision', 'UNKNOWN')}")
+                    print(f"📝 Conclusion: {decision.get('conclusion', 'No conclusion')}")
 
-                if 'recommendations' in decision:
-                    print("\n💡 Recommendations:")
-                    for rec in decision.get('recommendations', []):
-                        print(f"  • {rec}")
+                    if 'recommendations' in decision:
+                        print("\n💡 Recommendations:")
+                        for rec in decision.get('recommendations', []):
+                            print(f"  • {rec}")
 
-                print(f"\n📋 Reason: {decision.get('reason', 'No reason provided')}")
+                    print(f"\n📋 Reason: {decision.get('reason', 'No reason provided')}")
+                else:
+                    print(f"\n🎯 Decision: {decision}")
 
             # Show analyzer results
             print("\n🔍 Analyzer Outputs:")
             for analyzer in ['pattern_detector', 'behavioral_analizer', 'velocity_checker',
                            'merchant_risk_analizer', 'geographic_analizer']:
                 if analyzer in result:
+                    analyzer_result = str(result[analyzer])
                     print(f"\n{analyzer}:")
-                    print(f"  {result[analyzer][:200]}..." if len(str(result[analyzer])) > 200 else f"  {result[analyzer]}")
+                    print(f"  {analyzer_result[:200]}..." if len(analyzer_result) > 200 else f"  {analyzer_result}")
         else:
             print(f"Result: {result}")
 

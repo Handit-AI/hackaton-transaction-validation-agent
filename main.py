@@ -294,8 +294,41 @@ async def process_endpoint(request: ProcessRequest):
 
         processing_time = (time.time() - start_time) * 1000  # Convert to milliseconds
 
+        # Extract only analyzer results and final decision
+        final_output = {}
+
+        # If result is a dict containing 'results' (from graph execution)
+        if isinstance(result, dict):
+            # Get the results section which contains analyzer outputs
+            if 'results' in result:
+                analyzer_results = result['results']
+
+                # Include all analyzer outputs
+                for analyzer in ['pattern_detector', 'behavioral_analizer', 'velocity_checker',
+                               'merchant_risk_analizer', 'geographic_analizer']:
+                    if analyzer in analyzer_results:
+                        final_output[analyzer] = analyzer_results[analyzer]
+
+                # Include the decision aggregator (final decision)
+                if 'decision_aggregator' in analyzer_results:
+                    final_output['decision'] = analyzer_results['decision_aggregator']
+
+            # Alternative: Check if analyzers are directly in result
+            else:
+                for key in ['pattern_detector', 'behavioral_analizer', 'velocity_checker',
+                           'merchant_risk_analizer', 'geographic_analizer', 'decision_aggregator']:
+                    if key in result:
+                        if key == 'decision_aggregator':
+                            final_output['decision'] = result[key]
+                        else:
+                            final_output[key] = result[key]
+
+        # If no analyzers found, return the raw result
+        if not final_output:
+            final_output = result
+
         return ProcessResponse(
-            result=result,
+            result=final_output,
             success=True,
             metadata={
                 "agent": "risk_manager",
