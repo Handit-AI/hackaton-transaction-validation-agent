@@ -23,13 +23,13 @@ steps:
       - update
       - $_SERVICE_NAME
       - '--set-secrets'
-      - 'OPENAI_API_KEY=OPENAI_API_KEY:latest'
+      - 'OPENAI_API_KEY_HACKATON=OPENAI_API_KEY_HACKATON:latest'
+      - '--set-secrets'
+      - 'MODEL_PROVIDER_HACKATON=MODEL_PROVIDER_HACKATON:latest'
+      - '--set-secrets'
+      - 'MODEL_NAME_HACKATON=MODEL_NAME_HACKATON:latest'
       - '--set-env-vars'
       - 'ENVIRONMENT=production'
-      - '--set-env-vars'
-      - 'MODEL_PROVIDER=$_MODEL_PROVIDER'
-      - '--set-env-vars'
-      - 'MODEL_NAME=$_MODEL_NAME'
       - '--network=default'
       - '--subnet=default'
       - '--platform=managed'
@@ -59,8 +59,6 @@ substitutions:
   _SERVICE_NAME: transaction-validation-agent
   _DEPLOY_REGION: us-central1
   _AR_HOSTNAME: us-central1-docker.pkg.dev
-  _MODEL_PROVIDER: openai
-  _MODEL_NAME: gpt-4
   _TRIGGER_ID: your-trigger-id-here
 tags:
   - gcp-cloud-build-deploy-cloud-run

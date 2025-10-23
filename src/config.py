@@ -129,8 +129,8 @@ class Config:
         
         # Environment variables (for actual runtime configuration)
         self.handit_api_key = os.getenv("HANDIT_API_KEY")
-        self.model_provider = os.getenv("MODEL_PROVIDER", "mock")
-        self.model_name = os.getenv("MODEL_NAME", "mock-llm")
+        self.model_provider = os.getenv("MODEL_PROVIDER_HACKATON", "mock")
+        self.model_name = os.getenv("MODEL_NAME_HACKATON", "mock-llm")
 
         # Fraud Detection Configuration
         self.analyzer_weights = {

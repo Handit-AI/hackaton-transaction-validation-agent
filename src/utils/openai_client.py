@@ -14,12 +14,12 @@ class OpenAIClient:
 
     def __init__(self):
         """Initialize OpenAI client"""
-        api_key = os.getenv("OPENAI_API_KEY")
+        api_key = os.getenv("OPENAI_API_KEY_HACKATON")
         if not api_key:
-            raise ValueError("OPENAI_API_KEY environment variable not set")
+            raise ValueError("OPENAI_API_KEY_HACKATON environment variable not set")
 
         self.client = AsyncOpenAI(api_key=api_key)
-        self.default_model = os.getenv("MODEL_NAME", "gpt-4o-mini")
+        self.default_model = os.getenv("MODEL_NAME_HACKATON", "gpt-4o-mini")
 
     async def call_llm(
         self,
