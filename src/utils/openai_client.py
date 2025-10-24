@@ -237,6 +237,7 @@ class OpenAIClient:
                     combined_input = f"System Prompt:\n{formatted_system_prompt}\n\nUser Prompt:\n{user_prompt}"
                     trace_response = await self._trace_transaction(combined_input, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
                     if trace_response and "generated_bullets" in trace_response:
+                        print(f"🔍 call_llm - Adding generated bullets: {trace_response['generated_bullets']}")
                         add_generated_bullets(node_name, trace_response["generated_bullets"])
                 
                 return result
@@ -262,6 +263,7 @@ class OpenAIClient:
                     combined_input = f"System Prompt:\n{formatted_system_prompt}\n\nUser Prompt:\n{user_prompt}"
                     trace_response = await self._trace_transaction(combined_input, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
                     if trace_response and "generated_bullets" in trace_response:
+                        print(f"🔍 call_llm - Adding generated bullets: {trace_response['generated_bullets']}") 
                         add_generated_bullets(node_name, trace_response["generated_bullets"])
                 
                 return result
@@ -279,6 +281,7 @@ class OpenAIClient:
                 combined_input = f"System Prompt:\n{formatted_system_prompt}\n\nUser Prompt:\n{user_prompt}"
                 trace_response = await self._trace_transaction(combined_input, node_name, result, bullet_ids=bullet_ids, session_id=session_id, run_id=run_id, model_type=model_type)
                 if trace_response and "generated_bullets" in trace_response:
+                    print(f"🔍 call_llm - Adding generated bullets: {trace_response['generated_bullets']}")
                     add_generated_bullets(node_name, trace_response["generated_bullets"])
             
             return result
