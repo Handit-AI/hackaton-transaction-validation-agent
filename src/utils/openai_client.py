@@ -40,7 +40,7 @@ class OpenAIClient:
             payload = {
                 "input_text": input_text,
                 "node": node_name,
-                "max_bullets_per_evaluator": 10
+                "max_bullets_per_evaluator": 5
             }
             
             async with aiohttp.ClientSession() as session:

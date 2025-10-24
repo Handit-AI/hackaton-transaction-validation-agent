@@ -319,7 +319,7 @@ class RiskManagerGraph:
                 # Execute the graph with timeout
                 result = await asyncio.wait_for(
                     self.graph.ainvoke(initial_state),
-                    timeout=120.0  # 2 minutes for full graph execution
+                    timeout=1200.0  # 10 minutes for full graph execution with trace calls
                 )
                 
                 # Validate result
